@@ -14,16 +14,205 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      documents: {
+        Row: {
+          content: string | null
+          embedding: string | null
+          fts: unknown
+          id: number
+          metadata: Json | null
+        }
+        Insert: {
+          content?: string | null
+          embedding?: string | null
+          fts?: unknown
+          id?: never
+          metadata?: Json | null
+        }
+        Update: {
+          content?: string | null
+          embedding?: string | null
+          fts?: unknown
+          id?: never
+          metadata?: Json | null
+        }
+        Relationships: []
+      }
+      placas_solares: {
+        Row: {
+          aceita_financiamento: string | null
+          dimensao: string | null
+          eficiencia: string | null
+          especs: string | null
+          garantia: string | null
+          id: string
+          modelo: string | null
+          modelo_instalacao: string | null
+          pacote_10_placas: string | null
+          pacote_20_placas: string | null
+          pacote_5_placas: string | null
+          prazo: string | null
+          preco_por_placa: string | null
+        }
+        Insert: {
+          aceita_financiamento?: string | null
+          dimensao?: string | null
+          eficiencia?: string | null
+          especs?: string | null
+          garantia?: string | null
+          id?: string
+          modelo?: string | null
+          modelo_instalacao?: string | null
+          pacote_10_placas?: string | null
+          pacote_20_placas?: string | null
+          pacote_5_placas?: string | null
+          prazo?: string | null
+          preco_por_placa?: string | null
+        }
+        Update: {
+          aceita_financiamento?: string | null
+          dimensao?: string | null
+          eficiencia?: string | null
+          especs?: string | null
+          garantia?: string | null
+          id?: string
+          modelo?: string | null
+          modelo_instalacao?: string | null
+          pacote_10_placas?: string | null
+          pacote_20_placas?: string | null
+          pacote_5_placas?: string | null
+          prazo?: string | null
+          preco_por_placa?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          key: string | null
+          nome: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          key?: string | null
+          nome?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          key?: string | null
+          nome?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      usuarios: {
+        Row: {
+          cpf: string | null
+          criado_em: string | null
+          id: string
+          nome_completo: string | null
+          nome_whatsapp: string | null
+          numero: string
+          pausar_ia: string | null
+          qualificacao: string | null
+          renda: string | null
+          resumo: string | null
+          ultima_mensagem: string | null
+        }
+        Insert: {
+          cpf?: string | null
+          criado_em?: string | null
+          id?: string
+          nome_completo?: string | null
+          nome_whatsapp?: string | null
+          numero: string
+          pausar_ia?: string | null
+          qualificacao?: string | null
+          renda?: string | null
+          resumo?: string | null
+          ultima_mensagem?: string | null
+        }
+        Update: {
+          cpf?: string | null
+          criado_em?: string | null
+          id?: string
+          nome_completo?: string | null
+          nome_whatsapp?: string | null
+          numero?: string
+          pausar_ia?: string | null
+          qualificacao?: string | null
+          renda?: string | null
+          resumo?: string | null
+          ultima_mensagem?: string | null
+        }
+        Relationships: []
+      }
+      usuarios_crm: {
+        Row: {
+          criado_em: string | null
+          email: string
+          id: string
+          senha: string
+        }
+        Insert: {
+          criado_em?: string | null
+          email: string
+          id?: string
+          senha: string
+        }
+        Update: {
+          criado_em?: string | null
+          email?: string
+          id?: string
+          senha?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      hybrid_search: {
+        Args: {
+          full_text_weight?: number
+          match_count: number
+          query_embedding: string
+          query_text: string
+          rrf_k?: number
+          semantic_weight?: number
+        }
+        Returns: {
+          content: string | null
+          embedding: string | null
+          fts: unknown
+          id: number
+          metadata: Json | null
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "documents"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
     }
     Enums: {
-      [_ in never]: never
+      tipo_seguro:
+        | "auto"
+        | "fianca"
+        | "saude"
+        | "incendio"
+        | "vida"
+        | "empresarial"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +339,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      tipo_seguro: [
+        "auto",
+        "fianca",
+        "saude",
+        "incendio",
+        "vida",
+        "empresarial",
+      ],
+    },
   },
 } as const
