@@ -1,8 +1,7 @@
 import { useAuth } from '@/hooks/useAuth';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Bell, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 export function DashboardHeader() {
@@ -21,23 +20,18 @@ export function DashboardHeader() {
           />
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-          <Bell className="w-5 h-5" />
-        </Button>
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:block text-right">
-            <p className="text-sm font-medium text-foreground">
-              {user?.email?.split('@')[0] || 'Usuário'}
-            </p>
-            <p className="text-xs text-muted-foreground">Administrador</p>
-          </div>
-          <Avatar className="h-10 w-10 border-2 border-primary/30">
-            <AvatarFallback className="gradient-solar text-primary-foreground font-semibold">
-              {initials}
-            </AvatarFallback>
-          </Avatar>
+      <div className="flex items-center gap-3">
+        <div className="hidden sm:block text-right">
+          <p className="text-sm font-medium text-foreground">
+            {user?.email?.split('@')[0] || 'Usuário'}
+          </p>
+          <p className="text-xs text-muted-foreground">Administrador</p>
         </div>
+        <Avatar className="h-10 w-10 border-2 border-primary/30">
+          <AvatarFallback className="gradient-solar text-primary-foreground font-semibold">
+            {initials}
+          </AvatarFallback>
+        </Avatar>
       </div>
     </header>
   );
