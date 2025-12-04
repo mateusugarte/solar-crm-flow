@@ -27,7 +27,7 @@ export function LeadsChart({ leads }: LeadsChartProps) {
     const date = subDays(new Date(), 13 - i);
     return {
       date,
-      dateKey: format(date, 'dd-MM-yy'),
+      dateKey: format(date, 'dd-MM-yyyy'), // Format: 03-12-2025
       label: format(date, 'dd/MM', { locale: ptBR }),
     };
   });
@@ -35,7 +35,7 @@ export function LeadsChart({ leads }: LeadsChartProps) {
   const chartData = last14Days.map(({ dateKey, label }) => {
     const count = leads.filter(lead => {
       if (!lead.criado_em) return false;
-      // Direct comparison since both are in dd-MM-yy format
+      // Direct comparison since both are in dd-MM-yyyy format
       return lead.criado_em === dateKey;
     }).length;
 
