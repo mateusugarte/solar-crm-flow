@@ -1,35 +1,46 @@
 import { Lead } from '@/pages/Dashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
+import { XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { TrendingUp } from 'lucide-react';
-import { format, parseISO, subDays } from 'date-fns';
+import { format, subDays, parse } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 interface LeadsChartProps {
   leads: Lead[];
 }
 
+// Parse date from dd-MM-yy format to Date object
+function parseLeadDate(dateStr: string | null): Date | null {
+  if (!dateStr) return null;
+  try {
+    // Format: dd-MM-yy (ex: 03-12-25)
+    const parsed = parse(dateStr, 'dd-MM-yy', new Date());
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
 export function LeadsChart({ leads }: LeadsChartProps) {
-  // Agrupa leads por dia dos últimos 14 dias
+  // Get last 14 days
   const last14Days = Array.from({ length: 14 }, (_, i) => {
     const date = subDays(new Date(), 13 - i);
-    return format(date, 'yyyy-MM-dd');
+    return {
+      date,
+      dateKey: format(date, 'dd-MM-yy'),
+      label: format(date, 'dd/MM', { locale: ptBR }),
+    };
   });
 
-  const chartData = last14Days.map(date => {
+  const chartData = last14Days.map(({ dateKey, label }) => {
     const count = leads.filter(lead => {
       if (!lead.criado_em) return false;
-      try {
-        const leadDate = lead.criado_em.split(' ')[0];
-        return leadDate === date;
-      } catch {
-        return false;
-      }
+      // Direct comparison since both are in dd-MM-yy format
+      return lead.criado_em === dateKey;
     }).length;
 
     return {
-      date,
-      label: format(parseISO(date), 'dd/MM', { locale: ptBR }),
+      label,
       leads: count,
     };
   });
