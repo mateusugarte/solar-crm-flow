@@ -127,6 +127,7 @@ export type Database = {
           nome_completo: string | null
           nome_whatsapp: string | null
           numero: string
+          Oportunidade: string | null
           pausar_ia: string | null
           qualificacao: string | null
           renda: string | null
@@ -140,6 +141,7 @@ export type Database = {
           nome_completo?: string | null
           nome_whatsapp?: string | null
           numero: string
+          Oportunidade?: string | null
           pausar_ia?: string | null
           qualificacao?: string | null
           renda?: string | null
@@ -153,6 +155,7 @@ export type Database = {
           nome_completo?: string | null
           nome_whatsapp?: string | null
           numero?: string
+          Oportunidade?: string | null
           pausar_ia?: string | null
           qualificacao?: string | null
           renda?: string | null
