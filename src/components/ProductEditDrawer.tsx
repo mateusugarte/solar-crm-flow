@@ -101,23 +101,37 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate, onDel
             <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/50">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
                 <ToggleLeft className="w-4 h-4 text-amber-400" />
-                Status do Produto
+                Status e Estoque
               </h3>
               
-              <div className="space-y-2">
-                <Label className="text-muted-foreground">Disponibilidade</Label>
-                <Select
-                  value={formData.status || 'disponivel'}
-                  onValueChange={(value) => setFormData({ ...formData, status: value })}
-                >
-                  <SelectTrigger className="bg-background/50 border-border/50 h-11">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="disponivel">Disponível</SelectItem>
-                    <SelectItem value="indisponivel">Indisponível</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-muted-foreground">Disponibilidade</Label>
+                  <Select
+                    value={formData.status || 'disponivel'}
+                    onValueChange={(value) => setFormData({ ...formData, status: value })}
+                  >
+                    <SelectTrigger className="bg-background/50 border-border/50 h-11">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="disponivel">Disponível</SelectItem>
+                      <SelectItem value="indisponivel">Indisponível</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label className="text-muted-foreground">Quantidade em Estoque</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={formData.quantidade ?? 0}
+                    onChange={(e) => setFormData({ ...formData, quantidade: parseInt(e.target.value) || 0 })}
+                    className="bg-background/50 border-border/50 h-11"
+                    placeholder="0"
+                  />
+                </div>
               </div>
             </div>
 
