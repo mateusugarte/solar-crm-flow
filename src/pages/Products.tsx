@@ -26,6 +26,7 @@ export interface SolarPanel {
   modelo_instalacao: string | null;
   prazo: string | null;
   status: string | null;
+  quantidade: number | null;
 }
 
 export default function Products() {
@@ -83,6 +84,7 @@ export default function Products() {
       modelo_instalacao: '',
       prazo: '',
       status: 'disponivel',
+      quantidade: 0,
     });
     setIsNewProduct(true);
     setDrawerOpen(true);
@@ -106,6 +108,7 @@ export default function Products() {
           modelo_instalacao: updatedProduct.modelo_instalacao,
           prazo: updatedProduct.prazo,
           status: updatedProduct.status,
+          quantidade: updatedProduct.quantidade,
         })
         .select()
         .single();
@@ -134,6 +137,7 @@ export default function Products() {
           modelo_instalacao: updatedProduct.modelo_instalacao,
           prazo: updatedProduct.prazo,
           status: updatedProduct.status,
+          quantidade: updatedProduct.quantidade,
         })
         .eq('id', updatedProduct.id);
 

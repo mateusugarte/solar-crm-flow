@@ -1,7 +1,7 @@
 import { SolarPanel } from '@/pages/Products';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Zap, Ruler, Shield, Clock, ArrowRight, CheckCircle2, XCircle } from 'lucide-react';
+import { Zap, Ruler, Shield, Clock, ArrowRight, CheckCircle2, XCircle, Boxes } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -11,6 +11,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
   const isAvailable = product.status === 'disponivel';
+  const quantidade = product.quantidade ?? 0;
 
   return (
     <Card 
@@ -53,6 +54,11 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                     Indisponível
                   </>
                 )}
+              </Badge>
+              {/* Quantity Badge */}
+              <Badge className="bg-blue-500/20 text-blue-400 border-blue-500/30">
+                <Boxes className="w-3 h-3 mr-1" />
+                {quantidade} un.
               </Badge>
               {product.aceita_financiamento === 'Sim' && (
                 <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 hover:bg-amber-500/30">

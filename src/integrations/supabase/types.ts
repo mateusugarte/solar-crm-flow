@@ -53,6 +53,7 @@ export type Database = {
           pacote_5_placas: string | null
           prazo: string | null
           preco_por_placa: string | null
+          quantidade: number | null
           status: string | null
         }
         Insert: {
@@ -69,6 +70,7 @@ export type Database = {
           pacote_5_placas?: string | null
           prazo?: string | null
           preco_por_placa?: string | null
+          quantidade?: number | null
           status?: string | null
         }
         Update: {
@@ -85,6 +87,7 @@ export type Database = {
           pacote_5_placas?: string | null
           prazo?: string | null
           preco_por_placa?: string | null
+          quantidade?: number | null
           status?: string | null
         }
         Relationships: []
