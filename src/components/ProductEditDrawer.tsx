@@ -5,17 +5,30 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, Save, Zap, Ruler, Shield, Clock, DollarSign, Package, Settings2 } from 'lucide-react';
+import { X, Save, Zap, Ruler, Shield, Clock, DollarSign, Package, Settings2, Trash2, Plus, ToggleLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface ProductEditDrawerProps {
   product: SolarPanel | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onUpdate: (product: SolarPanel) => void;
+  onDelete?: (productId: string) => void;
+  isNew?: boolean;
 }
 
-export function ProductEditDrawer({ product, open, onOpenChange, onUpdate }: ProductEditDrawerProps) {
+export function ProductEditDrawer({ product, open, onOpenChange, onUpdate, onDelete, isNew = false }: ProductEditDrawerProps) {
   const [formData, setFormData] = useState<SolarPanel | null>(null);
 
   useEffect(() => {
@@ -29,6 +42,12 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate }: Pro
   const handleSave = () => {
     if (formData) {
       onUpdate(formData);
+    }
+  };
+
+  const handleDelete = () => {
+    if (onDelete && product.id) {
+      onDelete(product.id);
     }
   };
 
@@ -55,11 +74,15 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate }: Pro
           <div className="flex items-center justify-between p-6 border-b border-border bg-gradient-to-r from-amber-500/10 to-transparent">
             <div className="flex items-center gap-4">
               <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30">
-                <Settings2 className="w-6 h-6 text-amber-400" />
+                {isNew ? <Plus className="w-6 h-6 text-amber-400" /> : <Settings2 className="w-6 h-6 text-amber-400" />}
               </div>
               <div>
-                <h2 className="text-xl font-display font-bold text-foreground">Editar Produto</h2>
-                <p className="text-sm text-muted-foreground">Atualize as informações do produto</p>
+                <h2 className="text-xl font-display font-bold text-foreground">
+                  {isNew ? 'Novo Produto' : 'Editar Produto'}
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  {isNew ? 'Adicione um novo produto ao catálogo' : 'Atualize as informações do produto'}
+                </p>
               </div>
             </div>
             <Button 
@@ -74,6 +97,30 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate }: Pro
 
           {/* Content */}
           <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {/* Status Section */}
+            <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/50">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <ToggleLeft className="w-4 h-4 text-amber-400" />
+                Status do Produto
+              </h3>
+              
+              <div className="space-y-2">
+                <Label className="text-muted-foreground">Disponibilidade</Label>
+                <Select
+                  value={formData.status || 'disponivel'}
+                  onValueChange={(value) => setFormData({ ...formData, status: value })}
+                >
+                  <SelectTrigger className="bg-background/50 border-border/50 h-11">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="disponivel">Disponível</SelectItem>
+                    <SelectItem value="indisponivel">Indisponível</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
             {/* Model Section */}
             <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/50">
               <h3 className="font-semibold text-foreground flex items-center gap-2">
@@ -234,14 +281,45 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate }: Pro
           </div>
 
           {/* Footer */}
-          <div className="p-6 border-t border-border bg-card">
+          <div className="p-6 border-t border-border bg-card space-y-3">
             <Button 
               onClick={handleSave}
               className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25"
             >
               <Save className="w-5 h-5 mr-2" />
-              Salvar Alterações
+              {isNew ? 'Criar Produto' : 'Salvar Alterações'}
             </Button>
+            
+            {!isNew && onDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button 
+                    variant="outline"
+                    className="w-full h-12 border-red-500/30 text-red-400 hover:bg-red-500/10 hover:text-red-300 rounded-xl"
+                  >
+                    <Trash2 className="w-5 h-5 mr-2" />
+                    Excluir Produto
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="bg-card border-border">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Excluir produto?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Esta ação não pode ser desfeita. O produto será removido permanentemente do catálogo.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="border-border">Cancelar</AlertDialogCancel>
+                    <AlertDialogAction 
+                      onClick={handleDelete}
+                      className="bg-red-500 hover:bg-red-600 text-white"
+                    >
+                      Excluir
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
           </div>
         </div>
       </div>
