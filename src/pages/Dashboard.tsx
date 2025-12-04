@@ -7,6 +7,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { StatsCards } from '@/components/StatsCards';
 import { LeadsTable } from '@/components/LeadsTable';
+import { LeadsChart } from '@/components/LeadsChart';
 import { Loader2 } from 'lucide-react';
 
 export interface Lead {
@@ -64,12 +65,13 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background cyber-grid">
         <AppSidebar />
         <main className="flex-1 overflow-auto">
           <DashboardHeader />
           <div className="p-6 space-y-6 animate-fade-in">
             <StatsCards leads={leads} />
+            <LeadsChart leads={leads} />
             <LeadsTable leads={leads} loading={loading} onRefresh={fetchLeads} />
           </div>
         </main>
