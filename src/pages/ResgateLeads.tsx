@@ -24,15 +24,8 @@ interface Lead {
   cpf: string | null;
   resumo: string | null;
   pausar_ia: string | null;
+  Oportunidade: string | null;
 }
-
-// Keywords that indicate potential opportunities in the resumo
-const OPPORTUNITY_KEYWORDS = [
-  'interesse', 'interessado', 'quer', 'gostaria', 'precisa', 'orçamento',
-  'preço', 'valor', 'financiamento', 'parcela', 'instalar', 'instalação',
-  'economia', 'conta de luz', 'energia', 'solar', 'placa', 'retornar',
-  'ligar', 'whatsapp', 'contato', 'depois', 'semana', 'mês', 'aguardando'
-];
 
 export default function ResgateLeads() {
   const [leads, setLeads] = useState<Lead[]>([]);
@@ -73,19 +66,17 @@ export default function ResgateLeads() {
     return hoursAgo > 8;
   };
 
-  const hasOpportunityPotential = (lead: Lead): boolean => {
-    if (!lead.resumo) return false;
-    const resumoLower = lead.resumo.toLowerCase();
-    return OPPORTUNITY_KEYWORDS.some(keyword => resumoLower.includes(keyword));
+  const hasOpportunity = (lead: Lead): boolean => {
+    return !!lead.Oportunidade && lead.Oportunidade.trim() !== '';
   };
+
+  const oportunidades = useMemo(() => {
+    return leads.filter(lead => hasOpportunity(lead));
+  }, [leads]);
 
   const desqualificados = useMemo(() => {
     return leads.filter(lead => lead.qualificacao === 'Desqualificado');
   }, [leads]);
-
-  const oportunidades = useMemo(() => {
-    return desqualificados.filter(lead => hasOpportunityPotential(lead));
-  }, [desqualificados]);
 
   const followUp = useMemo(() => {
     return leads.filter(lead => 
@@ -309,7 +300,7 @@ export default function ResgateLeads() {
                       Oportunidades de Resgate
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
-                      Leads desqualificados com potencial de reativação (baseado na análise do resumo)
+                      Leads com oportunidade identificada
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -415,14 +406,14 @@ export default function ResgateLeads() {
               </div>
 
               {/* Opportunity Indicator */}
-              {selectedLead.qualificacao === 'Desqualificado' && hasOpportunityPotential(selectedLead) && (
+              {hasOpportunity(selectedLead) && (
                 <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
                   <p className="text-sm text-green-400 font-medium flex items-center gap-2">
                     <Target className="w-4 h-4" />
-                    Potencial de Resgate Identificado
+                    Oportunidade
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    O resumo indica interesse ou possibilidade de retomada do contato.
+                  <p className="text-sm text-foreground mt-2">
+                    {selectedLead.Oportunidade}
                   </p>
                 </div>
               )}
