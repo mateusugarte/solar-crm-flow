@@ -19,9 +19,9 @@ export const COLUMNS = [
 export function KanbanBoard({ leads, onLeadClick, onDragEnd }: KanbanBoardProps) {
   const getLeadsForColumn = (columnId: string) => {
     return leads.filter(lead => {
-      const qual = lead.qualificacao?.toLowerCase() || '';
+      const qual = (lead.qualificacao || '').trim().toLowerCase();
       const colId = columnId.toLowerCase();
-      return qual.includes(colId) || qual === colId;
+      return qual === colId;
     });
   };
 
