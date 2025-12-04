@@ -53,6 +53,7 @@ export type Database = {
           pacote_5_placas: string | null
           prazo: string | null
           preco_por_placa: string | null
+          status: string | null
         }
         Insert: {
           aceita_financiamento?: string | null
@@ -68,6 +69,7 @@ export type Database = {
           pacote_5_placas?: string | null
           prazo?: string | null
           preco_por_placa?: string | null
+          status?: string | null
         }
         Update: {
           aceita_financiamento?: string | null
@@ -83,6 +85,7 @@ export type Database = {
           pacote_5_placas?: string | null
           prazo?: string | null
           preco_por_placa?: string | null
+          status?: string | null
         }
         Relationships: []
       }

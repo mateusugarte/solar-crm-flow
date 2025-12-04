@@ -1,7 +1,7 @@
 import { SolarPanel } from '@/pages/Products';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Zap, Ruler, Shield, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Zap, Ruler, Shield, Clock, ArrowRight, CheckCircle2, XCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
@@ -10,12 +10,15 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onClick }: ProductCardProps) {
+  const isAvailable = product.status === 'disponivel';
+
   return (
     <Card 
       className={cn(
         "group relative border-border/50 bg-card/30 backdrop-blur-sm",
         "hover:border-amber-500/50 hover:bg-card/50",
-        "transition-all duration-500 cursor-pointer overflow-hidden"
+        "transition-all duration-500 cursor-pointer overflow-hidden",
+        !isAvailable && "opacity-70"
       )}
       onClick={onClick}
     >
@@ -29,10 +32,30 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
         {/* Header */}
         <div className="flex items-start justify-between mb-6">
           <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              {/* Status Badge */}
+              <Badge 
+                className={cn(
+                  "border",
+                  isAvailable 
+                    ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" 
+                    : "bg-red-500/20 text-red-400 border-red-500/30"
+                )}
+              >
+                {isAvailable ? (
+                  <>
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
+                    Disponível
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="w-3 h-3 mr-1" />
+                    Indisponível
+                  </>
+                )}
+              </Badge>
               {product.aceita_financiamento === 'Sim' && (
-                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30">
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30 hover:bg-amber-500/30">
                   Financiamento
                 </Badge>
               )}
