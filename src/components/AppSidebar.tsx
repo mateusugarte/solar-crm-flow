@@ -1,19 +1,15 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { motion } from 'framer-motion';
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarFooter,
   SidebarHeader,
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { Sun, LayoutDashboard, Package, LogOut, ChevronLeft, Kanban } from 'lucide-react';
+import { LayoutDashboard, Package, LogOut, ChevronLeft, Kanban, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
@@ -21,6 +17,8 @@ const menuItems = [
   { title: 'CRM Kanban', url: '/kanban', icon: Kanban },
   { title: 'Produtos', url: '/products', icon: Package },
 ];
+
+const ACCENT_COLOR = '#F59E0B'; // Yellow/amber color
 
 export function AppSidebar() {
   const { signOut } = useAuth();
@@ -35,46 +33,83 @@ export function AppSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
       <SidebarHeader className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl gradient-solar shadow-glow shrink-0">
-            <Sun className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <img 
+            src="/logo.png" 
+            alt="GetMore" 
+            className="w-10 h-10 object-contain shrink-0"
+          />
           {!collapsed && (
-            <span className="text-lg font-display font-bold text-sidebar-foreground">
+            <span className="text-xl font-display font-bold text-amber-400">
               GetMore
             </span>
           )}
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-3 py-4">
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {menuItems.map((item) => {
-                const isActive = location.pathname === item.url;
-                return (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton
-                      onClick={() => navigate(item.url)}
+      <SidebarContent className="px-4 py-6">
+        <div className="flex flex-col gap-2">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.url;
+            return (
+              <motion.div
+                key={item.title}
+                className={cn(
+                  'group flex items-center gap-3 cursor-pointer rounded-lg transition-colors',
+                  collapsed ? 'justify-center p-3' : 'px-3 py-3'
+                )}
+                initial="initial"
+                whileHover="hover"
+                animate={isActive ? 'active' : 'initial'}
+                onClick={() => navigate(item.url)}
+              >
+                {!collapsed && (
+                  <motion.div
+                    variants={{
+                      initial: { x: '-100%', opacity: 0 },
+                      hover: { x: 0, opacity: 1 },
+                      active: { x: 0, opacity: 1 },
+                    }}
+                    transition={{ duration: 0.3, ease: 'easeOut' }}
+                    className="z-0"
+                    style={{ color: ACCENT_COLOR }}
+                  >
+                    <ArrowRight strokeWidth={3} className="w-5 h-5" />
+                  </motion.div>
+                )}
+
+                <motion.div
+                  className="flex items-center gap-3"
+                  variants={{
+                    initial: { x: collapsed ? 0 : -20, color: 'inherit' },
+                    hover: { x: 0, color: ACCENT_COLOR },
+                    active: { x: 0, color: ACCENT_COLOR },
+                  }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                >
+                  <item.icon 
+                    className={cn(
+                      'w-5 h-5 shrink-0 transition-colors',
+                      isActive ? 'text-amber-400' : 'text-sidebar-foreground group-hover:text-amber-400'
+                    )} 
+                  />
+                  {!collapsed && (
+                    <span 
                       className={cn(
-                        'w-full justify-start gap-3 h-11 px-3 rounded-lg transition-all',
-                        isActive
-                          ? 'bg-primary/10 text-primary neon-border'
-                          : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
+                        'font-semibold text-lg transition-colors',
+                        isActive ? 'text-amber-400' : 'text-sidebar-foreground group-hover:text-amber-400'
                       )}
                     >
-                      <item.icon className={cn('w-5 h-5 shrink-0', isActive && 'text-primary')} />
-                      {!collapsed && <span className="font-medium">{item.title}</span>}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+                      {item.title}
+                    </span>
+                  )}
+                </motion.div>
+              </motion.div>
+            );
+          })}
+        </div>
       </SidebarContent>
 
       <SidebarFooter className="p-3 border-t border-sidebar-border space-y-1">
@@ -82,7 +117,7 @@ export function AppSidebar() {
           variant="ghost"
           size="sm"
           onClick={toggleSidebar}
-          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent"
+          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent hover:text-amber-400"
         >
           <ChevronLeft className={cn('w-5 h-5 transition-transform', collapsed && 'rotate-180')} />
           {!collapsed && <span>Recolher</span>}

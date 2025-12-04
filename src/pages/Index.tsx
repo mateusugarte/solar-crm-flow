@@ -47,8 +47,8 @@ export default function Index() {
       {/* Login Card */}
       <Card className="relative z-10 w-full max-w-md mx-4 border-border/50 bg-card/80 backdrop-blur-xl shadow-2xl">
         <CardHeader className="text-center pb-2">
-          <div className="mx-auto p-4 rounded-2xl gradient-solar shadow-glow mb-4 w-fit">
-            <Sun className="w-8 h-8 text-primary-foreground" />
+          <div className="mx-auto p-3 rounded-2xl bg-zinc-900 shadow-glow mb-4 w-fit">
+            <img src="/logo.png" alt="GetMore" className="w-10 h-10 object-contain" />
           </div>
           <CardTitle className="text-2xl font-display font-bold">GetMore Solar</CardTitle>
           <CardDescription className="text-muted-foreground">
