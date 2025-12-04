@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, Save, Sun, Zap, Ruler, Shield, Clock, DollarSign, Package } from 'lucide-react';
+import { X, Save, Zap, Ruler, Shield, Clock, DollarSign, Package, Settings2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ProductEditDrawerProps {
@@ -33,127 +33,161 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate }: Pro
   };
 
   return (
-    <div 
-      className={cn(
-        "fixed top-0 right-0 h-full w-full max-w-md bg-card border-l border-border shadow-2xl z-50 transform transition-transform duration-300 ease-out",
-        open ? "translate-x-0" : "translate-x-full"
-      )}
-    >
-      <div className="flex flex-col h-full">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg gradient-solar">
-              <Sun className="w-5 h-5 text-primary-foreground" />
+    <>
+      {/* Backdrop */}
+      <div 
+        className={cn(
+          "fixed inset-0 bg-black/60 backdrop-blur-sm z-40 transition-opacity duration-300",
+          open ? "opacity-100" : "opacity-0 pointer-events-none"
+        )}
+        onClick={() => onOpenChange(false)}
+      />
+      
+      {/* Drawer */}
+      <div 
+        className={cn(
+          "fixed top-0 right-0 h-full w-full max-w-lg bg-card border-l border-border z-50 transform transition-transform duration-500 ease-out",
+          open ? "translate-x-0" : "translate-x-full"
+        )}
+      >
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="flex items-center justify-between p-6 border-b border-border bg-gradient-to-r from-amber-500/10 to-transparent">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30">
+                <Settings2 className="w-6 h-6 text-amber-400" />
+              </div>
+              <div>
+                <h2 className="text-xl font-display font-bold text-foreground">Editar Produto</h2>
+                <p className="text-sm text-muted-foreground">Atualize as informações do produto</p>
+              </div>
             </div>
-            <h2 className="text-xl font-display font-bold text-foreground">Editar Produto</h2>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={() => onOpenChange(false)}
+              className="rounded-xl hover:bg-muted"
+            >
+              <X className="w-5 h-5" />
+            </Button>
           </div>
-          <Button variant="ghost" size="icon" onClick={() => onOpenChange(false)}>
-            <X className="w-5 h-5" />
-          </Button>
-        </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-muted-foreground">
-                <Sun className="w-4 h-4" /> Modelo
-              </Label>
-              <Input
-                value={formData.modelo || ''}
-                onChange={(e) => setFormData({ ...formData, modelo: e.target.value })}
-                className="bg-muted/50 border-border/50"
-              />
-            </div>
+          {/* Content */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            {/* Model Section */}
+            <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/50">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <Package className="w-4 h-4 text-amber-400" />
+                Informações Básicas
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="text-muted-foreground">Modelo</Label>
+                  <Input
+                    value={formData.modelo || ''}
+                    onChange={(e) => setFormData({ ...formData, modelo: e.target.value })}
+                    className="bg-background/50 border-border/50 h-11"
+                    placeholder="Ex: Painel Solar 550W"
+                  />
+                </div>
 
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-muted-foreground">
-                Especificações
-              </Label>
-              <Textarea
-                value={formData.especs || ''}
-                onChange={(e) => setFormData({ ...formData, especs: e.target.value })}
-                className="bg-muted/50 border-border/50 min-h-[80px]"
-              />
-            </div>
+                <div className="space-y-2">
+                  <Label className="text-muted-foreground">Especificações</Label>
+                  <Textarea
+                    value={formData.especs || ''}
+                    onChange={(e) => setFormData({ ...formData, especs: e.target.value })}
+                    className="bg-background/50 border-border/50 min-h-[100px] resize-none"
+                    placeholder="Descreva as especificações técnicas..."
+                  />
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-muted-foreground">
-                  <Zap className="w-4 h-4" /> Eficiência
-                </Label>
-                <Input
-                  value={formData.eficiencia || ''}
-                  onChange={(e) => setFormData({ ...formData, eficiencia: e.target.value })}
-                  className="bg-muted/50 border-border/50"
-                />
-              </div>
+                <div className="space-y-2">
+                  <Label className="text-muted-foreground">Modelo de Instalação</Label>
+                  <Input
+                    value={formData.modelo_instalacao || ''}
+                    onChange={(e) => setFormData({ ...formData, modelo_instalacao: e.target.value })}
+                    className="bg-background/50 border-border/50 h-11"
+                  />
+                </div>
 
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-muted-foreground">
-                  <Ruler className="w-4 h-4" /> Dimensão
-                </Label>
-                <Input
-                  value={formData.dimensao || ''}
-                  onChange={(e) => setFormData({ ...formData, dimensao: e.target.value })}
-                  className="bg-muted/50 border-border/50"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-muted-foreground">
-                  <Shield className="w-4 h-4" /> Garantia
-                </Label>
-                <Input
-                  value={formData.garantia || ''}
-                  onChange={(e) => setFormData({ ...formData, garantia: e.target.value })}
-                  className="bg-muted/50 border-border/50"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-muted-foreground">
-                  <Clock className="w-4 h-4" /> Prazo
-                </Label>
-                <Input
-                  value={formData.prazo || ''}
-                  onChange={(e) => setFormData({ ...formData, prazo: e.target.value })}
-                  className="bg-muted/50 border-border/50"
-                />
+                <div className="space-y-2">
+                  <Label className="text-muted-foreground">Aceita Financiamento</Label>
+                  <Select
+                    value={formData.aceita_financiamento || 'Não'}
+                    onValueChange={(value) => setFormData({ ...formData, aceita_financiamento: value })}
+                  >
+                    <SelectTrigger className="bg-background/50 border-border/50 h-11">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Sim">Sim</SelectItem>
+                      <SelectItem value="Não">Não</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-muted-foreground">Aceita Financiamento</Label>
-              <Select
-                value={formData.aceita_financiamento || 'Não'}
-                onValueChange={(value) => setFormData({ ...formData, aceita_financiamento: value })}
-              >
-                <SelectTrigger className="bg-muted/50 border-border/50">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Sim">Sim</SelectItem>
-                  <SelectItem value="Não">Não</SelectItem>
-                </SelectContent>
-              </Select>
+            {/* Specs Section */}
+            <div className="space-y-4 p-4 rounded-xl bg-muted/30 border border-border/50">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <Zap className="w-4 h-4 text-amber-400" />
+                Especificações Técnicas
+              </h3>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-muted-foreground">
+                    <Zap className="w-3 h-3" /> Eficiência
+                  </Label>
+                  <Input
+                    value={formData.eficiencia || ''}
+                    onChange={(e) => setFormData({ ...formData, eficiencia: e.target.value })}
+                    className="bg-background/50 border-border/50 h-11"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-muted-foreground">
+                    <Ruler className="w-3 h-3" /> Dimensão
+                  </Label>
+                  <Input
+                    value={formData.dimensao || ''}
+                    onChange={(e) => setFormData({ ...formData, dimensao: e.target.value })}
+                    className="bg-background/50 border-border/50 h-11"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-muted-foreground">
+                    <Shield className="w-3 h-3" /> Garantia
+                  </Label>
+                  <Input
+                    value={formData.garantia || ''}
+                    onChange={(e) => setFormData({ ...formData, garantia: e.target.value })}
+                    className="bg-background/50 border-border/50 h-11"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-muted-foreground">
+                    <Clock className="w-3 h-3" /> Prazo
+                  </Label>
+                  <Input
+                    value={formData.prazo || ''}
+                    onChange={(e) => setFormData({ ...formData, prazo: e.target.value })}
+                    className="bg-background/50 border-border/50 h-11"
+                  />
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label className="text-muted-foreground">Modelo de Instalação</Label>
-              <Input
-                value={formData.modelo_instalacao || ''}
-                onChange={(e) => setFormData({ ...formData, modelo_instalacao: e.target.value })}
-                className="bg-muted/50 border-border/50"
-              />
-            </div>
-
-            <div className="pt-4 border-t border-border/50">
-              <h3 className="font-display font-semibold mb-4 flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-primary" /> Preços
+            {/* Pricing Section */}
+            <div className="space-y-4 p-4 rounded-xl bg-gradient-to-br from-amber-500/10 to-transparent border border-amber-500/20">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <DollarSign className="w-4 h-4 text-amber-400" />
+                Preços
               </h3>
               
               <div className="space-y-4">
@@ -162,54 +196,55 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate }: Pro
                   <Input
                     value={formData.preco_por_placa || ''}
                     onChange={(e) => setFormData({ ...formData, preco_por_placa: e.target.value })}
-                    className="bg-muted/50 border-border/50"
+                    className="bg-background/50 border-amber-500/30 h-11 text-lg font-semibold"
+                    placeholder="R$ 0,00"
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Package className="w-4 h-4" /> Pacote 5 Placas
-                  </Label>
-                  <Input
-                    value={formData.pacote_5_placas || ''}
-                    onChange={(e) => setFormData({ ...formData, pacote_5_placas: e.target.value })}
-                    className="bg-muted/50 border-border/50"
-                  />
-                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Pacote 5x</Label>
+                    <Input
+                      value={formData.pacote_5_placas || ''}
+                      onChange={(e) => setFormData({ ...formData, pacote_5_placas: e.target.value })}
+                      className="bg-background/50 border-border/50 h-10 text-sm"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">Pacote 10 Placas</Label>
-                  <Input
-                    value={formData.pacote_10_placas || ''}
-                    onChange={(e) => setFormData({ ...formData, pacote_10_placas: e.target.value })}
-                    className="bg-muted/50 border-border/50"
-                  />
-                </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Pacote 10x</Label>
+                    <Input
+                      value={formData.pacote_10_placas || ''}
+                      onChange={(e) => setFormData({ ...formData, pacote_10_placas: e.target.value })}
+                      className="bg-background/50 border-border/50 h-10 text-sm"
+                    />
+                  </div>
 
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">Pacote 20 Placas</Label>
-                  <Input
-                    value={formData.pacote_20_placas || ''}
-                    onChange={(e) => setFormData({ ...formData, pacote_20_placas: e.target.value })}
-                    className="bg-muted/50 border-border/50"
-                  />
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground">Pacote 20x</Label>
+                    <Input
+                      value={formData.pacote_20_placas || ''}
+                      onChange={(e) => setFormData({ ...formData, pacote_20_placas: e.target.value })}
+                      className="bg-background/50 border-border/50 h-10 text-sm"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="p-6 border-t border-border">
-          <Button 
-            onClick={handleSave}
-            className="w-full gradient-solar text-primary-foreground font-semibold shadow-glow"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            Salvar Alterações
-          </Button>
+          {/* Footer */}
+          <div className="p-6 border-t border-border bg-card">
+            <Button 
+              onClick={handleSave}
+              className="w-full h-12 bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/25"
+            >
+              <Save className="w-5 h-5 mr-2" />
+              Salvar Alterações
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

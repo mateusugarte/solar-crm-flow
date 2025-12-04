@@ -1,7 +1,8 @@
 import { SolarPanel } from '@/pages/Products';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Sun, Zap, Ruler, Shield, Clock, Edit } from 'lucide-react';
+import { Zap, Ruler, Shield, Clock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: SolarPanel;
@@ -11,87 +12,108 @@ interface ProductCardProps {
 export function ProductCard({ product, onClick }: ProductCardProps) {
   return (
     <Card 
-      className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/50 transition-all duration-300 cursor-pointer group hover:shadow-glow"
+      className={cn(
+        "group relative border-border/50 bg-card/30 backdrop-blur-sm",
+        "hover:border-amber-500/50 hover:bg-card/50",
+        "transition-all duration-500 cursor-pointer overflow-hidden"
+      )}
       onClick={onClick}
     >
-      <CardHeader className="pb-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg gradient-solar">
-              <Sun className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <CardTitle className="text-lg font-display">{product.modelo || 'Sem modelo'}</CardTitle>
+      {/* Gradient Overlay on Hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-amber-500/0 via-amber-500/0 to-amber-500/0 group-hover:from-amber-500/5 group-hover:via-amber-500/5 group-hover:to-transparent transition-all duration-500" />
+      
+      {/* Glow Effect */}
+      <div className="absolute -top-20 -right-20 w-40 h-40 bg-amber-500/0 group-hover:bg-amber-500/20 rounded-full blur-3xl transition-all duration-700" />
+
+      <CardContent className="relative p-6">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-6">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
               {product.aceita_financiamento === 'Sim' && (
-                <Badge variant="secondary" className="mt-1 bg-success/20 text-success border-0">
-                  Aceita Financiamento
+                <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/30">
+                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                  Financiamento
                 </Badge>
               )}
             </div>
+            <h3 className="text-xl font-display font-bold text-foreground group-hover:text-amber-400 transition-colors">
+              {product.modelo || 'Sem modelo'}
+            </h3>
+            {product.especs && (
+              <p className="text-sm text-muted-foreground mt-2 line-clamp-2">
+                {product.especs}
+              </p>
+            )}
           </div>
-          <div className="p-2 rounded-lg bg-muted/50 opacity-0 group-hover:opacity-100 transition-opacity">
-            <Edit className="w-4 h-4 text-muted-foreground" />
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3 text-sm">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Zap className="w-4 h-4 text-primary" />
-            <span>{product.eficiencia || '-'}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Ruler className="w-4 h-4 text-secondary" />
-            <span>{product.dimensao || '-'}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Shield className="w-4 h-4 text-accent" />
-            <span>{product.garantia || '-'}</span>
-          </div>
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <Clock className="w-4 h-4 text-warning" />
-            <span>{product.prazo || '-'}</span>
+          
+          {/* Arrow Indicator */}
+          <div className="p-2 rounded-lg bg-muted/50 group-hover:bg-amber-500/20 transition-all duration-300 group-hover:translate-x-1">
+            <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-amber-400 transition-colors" />
           </div>
         </div>
 
-        {product.especs && (
-          <p className="text-sm text-muted-foreground line-clamp-2">{product.especs}</p>
-        )}
-
-        <div className="pt-3 border-t border-border/50">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Por placa</span>
-            <span className="text-lg font-display font-bold text-primary">
-              {product.preco_por_placa || '-'}
-            </span>
-          </div>
-        </div>
-
-        {(product.pacote_5_placas || product.pacote_10_placas || product.pacote_20_placas) && (
-          <div className="space-y-2">
-            <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Pacotes</p>
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              {product.pacote_5_placas && (
-                <div className="bg-muted/50 rounded-lg p-2 text-center">
-                  <p className="font-medium">5 placas</p>
-                  <p className="text-muted-foreground">{product.pacote_5_placas}</p>
-                </div>
-              )}
-              {product.pacote_10_placas && (
-                <div className="bg-muted/50 rounded-lg p-2 text-center">
-                  <p className="font-medium">10 placas</p>
-                  <p className="text-muted-foreground">{product.pacote_10_placas}</p>
-                </div>
-              )}
-              {product.pacote_20_placas && (
-                <div className="bg-muted/50 rounded-lg p-2 text-center">
-                  <p className="font-medium">20 placas</p>
-                  <p className="text-muted-foreground">{product.pacote_20_placas}</p>
-                </div>
-              )}
+        {/* Specs Grid */}
+        <div className="grid grid-cols-2 gap-4 mb-6">
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+            <Zap className="w-5 h-5 text-amber-400 shrink-0" />
+            <div>
+              <p className="text-xs text-muted-foreground">Eficiência</p>
+              <p className="text-sm font-medium text-foreground">{product.eficiencia || '-'}</p>
             </div>
           </div>
-        )}
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+            <Ruler className="w-5 h-5 text-blue-400 shrink-0" />
+            <div>
+              <p className="text-xs text-muted-foreground">Dimensão</p>
+              <p className="text-sm font-medium text-foreground">{product.dimensao || '-'}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+            <Shield className="w-5 h-5 text-emerald-400 shrink-0" />
+            <div>
+              <p className="text-xs text-muted-foreground">Garantia</p>
+              <p className="text-sm font-medium text-foreground">{product.garantia || '-'}</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border border-border/30">
+            <Clock className="w-5 h-5 text-purple-400 shrink-0" />
+            <div>
+              <p className="text-xs text-muted-foreground">Prazo</p>
+              <p className="text-sm font-medium text-foreground">{product.prazo || '-'}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Price Section */}
+        <div className="pt-4 border-t border-border/50">
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="text-xs text-muted-foreground mb-1">Preço por placa</p>
+              <p className="text-2xl font-display font-bold text-amber-400">
+                {product.preco_por_placa || '-'}
+              </p>
+            </div>
+            
+            {/* Package Prices */}
+            {(product.pacote_5_placas || product.pacote_10_placas || product.pacote_20_placas) && (
+              <div className="flex gap-2">
+                {product.pacote_5_placas && (
+                  <div className="text-center px-3 py-2 rounded-lg bg-muted/50 border border-border/30">
+                    <p className="text-xs text-muted-foreground">5x</p>
+                    <p className="text-xs font-semibold text-foreground">{product.pacote_5_placas}</p>
+                  </div>
+                )}
+                {product.pacote_10_placas && (
+                  <div className="text-center px-3 py-2 rounded-lg bg-muted/50 border border-border/30">
+                    <p className="text-xs text-muted-foreground">10x</p>
+                    <p className="text-xs font-semibold text-foreground">{product.pacote_10_placas}</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

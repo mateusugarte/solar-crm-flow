@@ -35,17 +35,12 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon" className="border-r border-sidebar-border bg-sidebar">
       <SidebarHeader className="p-4 border-b border-sidebar-border">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center">
           <img 
             src="/logo.png" 
             alt="GetMore" 
-            className="w-10 h-10 object-contain shrink-0"
+            className={cn('object-contain shrink-0 transition-all', collapsed ? 'w-8 h-8' : 'w-12 h-12')}
           />
-          {!collapsed && (
-            <span className="text-xl font-display font-bold text-amber-400">
-              GetMore
-            </span>
-          )}
         </div>
       </SidebarHeader>
 
