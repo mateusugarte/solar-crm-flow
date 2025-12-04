@@ -90,6 +90,7 @@ export default function ResgateLeads() {
   const followUp = useMemo(() => {
     return leads.filter(lead => 
       lead.qualificacao !== 'Desqualificado' && 
+      lead.qualificacao !== 'Qualificado' &&
       isMoreThan8HoursAgo(lead.ultima_mensagem)
     );
   }, [leads]);
