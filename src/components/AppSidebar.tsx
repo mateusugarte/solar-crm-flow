@@ -13,11 +13,12 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { Sun, LayoutDashboard, Package, LogOut, ChevronLeft } from 'lucide-react';
+import { Sun, LayoutDashboard, Package, LogOut, ChevronLeft, Kanban } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
+  { title: 'CRM Kanban', url: '/kanban', icon: Kanban },
   { title: 'Produtos', url: '/products', icon: Package },
 ];
 
@@ -30,14 +31,14 @@ export function AppSidebar() {
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/auth');
+    navigate('/');
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r-0">
-      <SidebarHeader className="p-4">
+    <Sidebar collapsible="icon" className="border-r border-sidebar-border">
+      <SidebarHeader className="p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg gradient-solar shrink-0">
+          <div className="p-2 rounded-xl gradient-solar shadow-glow shrink-0">
             <Sun className="w-5 h-5 text-primary-foreground" />
           </div>
           {!collapsed && (
@@ -48,10 +49,10 @@ export function AppSidebar() {
         </div>
       </SidebarHeader>
 
-      <SidebarContent className="px-2">
+      <SidebarContent className="px-3 py-4">
         <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1">
               {menuItems.map((item) => {
                 const isActive = location.pathname === item.url;
                 return (
@@ -61,12 +62,12 @@ export function AppSidebar() {
                       className={cn(
                         'w-full justify-start gap-3 h-11 px-3 rounded-lg transition-all',
                         isActive
-                          ? 'bg-sidebar-primary text-sidebar-primary-foreground font-medium'
-                          : 'text-sidebar-foreground hover:bg-sidebar-accent'
+                          ? 'bg-primary/10 text-primary neon-border'
+                          : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground'
                       )}
                     >
-                      <item.icon className="w-5 h-5 shrink-0" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <item.icon className={cn('w-5 h-5 shrink-0', isActive && 'text-primary')} />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 );
@@ -76,7 +77,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-4 space-y-2">
+      <SidebarFooter className="p-3 border-t border-sidebar-border space-y-1">
         <Button
           variant="ghost"
           size="sm"
@@ -90,7 +91,7 @@ export function AppSidebar() {
           variant="ghost"
           size="sm"
           onClick={handleSignOut}
-          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-destructive/20 hover:text-destructive"
+          className="w-full justify-start gap-3 text-destructive hover:bg-destructive/10"
         >
           <LogOut className="w-5 h-5 shrink-0" />
           {!collapsed && <span>Sair</span>}

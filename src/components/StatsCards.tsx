@@ -1,69 +1,93 @@
 import { Lead } from '@/pages/Dashboard';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, UserCheck, TrendingUp, MessageSquare } from 'lucide-react';
+import { Users, UserCheck, UserX, Flame, MessageSquare, TrendingUp } from 'lucide-react';
 
 interface StatsCardsProps {
   leads: Lead[];
 }
 
 export function StatsCards({ leads }: StatsCardsProps) {
-  const totalLeads = leads.length;
-  const qualifiedLeads = leads.filter(l => 
-    l.qualificacao?.toLowerCase().includes('qualificado') || 
-    l.qualificacao?.toLowerCase().includes('hot')
+  const total = leads.length;
+  const qualificados = leads.filter(l => 
+    l.qualificacao?.toLowerCase().includes('qualificado') && 
+    !l.qualificacao?.toLowerCase().includes('desqualificado')
   ).length;
-  const withIncome = leads.filter(l => l.renda).length;
-  const recentMessages = leads.filter(l => l.ultima_mensagem).length;
+  const desqualificados = leads.filter(l => 
+    l.qualificacao?.toLowerCase().includes('desqualificado')
+  ).length;
+  const aquecendo = leads.filter(l => 
+    l.qualificacao?.toLowerCase().includes('aquecendo')
+  ).length;
+  const interesse = leads.filter(l => 
+    l.qualificacao?.toLowerCase().includes('interesse')
+  ).length;
+  const taxaQualificacao = total > 0 ? Math.round((qualificados / total) * 100) : 0;
 
   const stats = [
     {
       title: 'Total de Leads',
-      value: totalLeads,
+      value: total,
       icon: Users,
-      gradient: 'gradient-solar',
-      textColor: 'text-primary-foreground',
+      color: 'text-secondary',
+      bgColor: 'bg-secondary/10',
+    },
+    {
+      title: 'Taxa de Qualificação',
+      value: `${taxaQualificacao}%`,
+      icon: TrendingUp,
+      color: 'text-primary',
+      bgColor: 'bg-primary/10',
     },
     {
       title: 'Qualificados',
-      value: qualifiedLeads,
+      value: qualificados,
       icon: UserCheck,
-      gradient: 'gradient-ocean',
-      textColor: 'text-secondary-foreground',
+      color: 'text-success',
+      bgColor: 'bg-success/10',
     },
     {
-      title: 'Com Renda',
-      value: withIncome,
-      icon: TrendingUp,
-      gradient: 'bg-success',
-      textColor: 'text-success-foreground',
+      title: 'Desqualificados',
+      value: desqualificados,
+      icon: UserX,
+      color: 'text-destructive',
+      bgColor: 'bg-destructive/10',
     },
     {
-      title: 'Mensagens Recentes',
-      value: recentMessages,
+      title: 'Aquecendo',
+      value: aquecendo,
+      icon: Flame,
+      color: 'text-warning',
+      bgColor: 'bg-warning/10',
+    },
+    {
+      title: 'Interesse',
+      value: interesse,
       icon: MessageSquare,
-      gradient: 'bg-accent',
-      textColor: 'text-accent-foreground',
+      color: 'text-accent',
+      bgColor: 'bg-accent/10',
     },
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
       {stats.map((stat, index) => (
         <Card 
-          key={stat.title} 
-          className="border-0 shadow-soft overflow-hidden animate-fade-in"
-          style={{ animationDelay: `${index * 100}ms` }}
+          key={stat.title}
+          className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300 animate-fade-in"
+          style={{ animationDelay: `${index * 50}ms` }}
         >
-          <CardContent className="p-0">
-            <div className="flex items-center gap-4 p-5">
-              <div className={`p-3 rounded-xl ${stat.gradient}`}>
-                <stat.icon className={`w-6 h-6 ${stat.textColor}`} />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground font-medium">{stat.title}</p>
-                <p className="text-3xl font-display font-bold">{stat.value}</p>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
+                <stat.icon className={`w-4 h-4 ${stat.color}`} />
               </div>
             </div>
+            <p className="text-2xl font-display font-bold text-foreground mb-1">
+              {stat.value}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {stat.title}
+            </p>
           </CardContent>
         </Card>
       ))}
