@@ -9,13 +9,14 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Package, LogOut, ChevronLeft, Kanban, ArrowRight } from 'lucide-react';
+import { LayoutDashboard, Package, LogOut, ChevronLeft, Kanban, ArrowRight, UserSearch } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
   { title: 'CRM Kanban', url: '/kanban', icon: Kanban },
   { title: 'Produtos', url: '/products', icon: Package },
+  { title: 'Resgate', url: '/resgate', icon: UserSearch },
 ];
 
 const ACCENT_COLOR = '#F59E0B'; // Yellow/amber color
