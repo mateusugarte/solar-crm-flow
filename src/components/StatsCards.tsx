@@ -1,6 +1,6 @@
 import { Lead } from '@/pages/Dashboard';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, UserCheck, UserX, Flame, TrendingUp, Clock, FileCheck, ShoppingCart, FileX } from 'lucide-react';
+import { Users, UserCheck, TrendingUp, FileCheck, ShoppingCart, FileX } from 'lucide-react';
 import { parse, differenceInHours } from 'date-fns';
 
 interface StatsCardsProps {
@@ -28,16 +28,6 @@ export function StatsCards({ leads }: StatsCardsProps) {
   const qualificados = leads.filter(l => 
     l.qualificacao?.toLowerCase() === 'qualificado'
   ).length;
-  const desqualificados = leads.filter(l => 
-    l.qualificacao?.toLowerCase() === 'desqualificado'
-  ).length;
-  const aquecendo = leads.filter(l => 
-    l.qualificacao?.toLowerCase() === 'aquecendo'
-  ).length;
-  const followUp = leads.filter(l => 
-    l.qualificacao !== 'Desqualificado' && 
-    isMoreThan8HoursAgo(l.ultima_mensagem)
-  ).length;
   const propostasEnviadas = leads.filter(l => 
     l.qualificacao?.toLowerCase() === 'proposta enviada'
   ).length;
@@ -54,43 +44,31 @@ export function StatsCards({ leads }: StatsCardsProps) {
       title: 'Total de Leads',
       value: total,
       icon: Users,
-      color: 'text-secondary',
-      bgColor: 'bg-secondary/10',
     },
     {
       title: 'Taxa de Qualificação',
       value: `${taxaQualificacao}%`,
       icon: TrendingUp,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
     },
     {
       title: 'Qualificados',
       value: qualificados,
       icon: UserCheck,
-      color: 'text-success',
-      bgColor: 'bg-success/10',
     },
     {
       title: 'Propostas Enviadas',
       value: propostasEnviadas,
       icon: FileCheck,
-      color: 'text-cyan-400',
-      bgColor: 'bg-cyan-500/10',
     },
     {
       title: 'Vendas Concluídas',
       value: vendasConcluidas,
       icon: ShoppingCart,
-      color: 'text-green-400',
-      bgColor: 'bg-green-500/10',
     },
     {
       title: 'Propostas Rejeitadas',
       value: propostasRejeitadas,
       icon: FileX,
-      color: 'text-rose-400',
-      bgColor: 'bg-rose-500/10',
     },
   ];
 
@@ -103,8 +81,8 @@ export function StatsCards({ leads }: StatsCardsProps) {
         >
           <CardContent className="p-4">
             <div className="flex items-center gap-3 mb-3">
-              <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                <stat.icon className={`w-4 h-4 ${stat.color}`} />
+              <div className="p-2 rounded-lg bg-primary/10">
+                <stat.icon className="w-4 h-4 text-primary" />
               </div>
             </div>
             <p className="text-2xl font-semibold text-foreground mb-1">

@@ -181,56 +181,53 @@ export default function Products() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background animated-bg">
         <AppSidebar />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto relative z-10">
           <DashboardHeader />
           
-          <div className="p-8 animate-fade-in">
-            {/* Hero Section */}
-            <div className="relative mb-10 p-8 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-600/5 to-transparent border border-amber-500/20 overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-              <div className="relative z-10 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 rounded-xl bg-amber-500/20 border border-amber-500/30">
-                    <Package className="w-7 h-7 text-amber-400" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl font-display font-bold text-foreground">
-                      Catálogo de Produtos
-                    </h1>
-                    <p className="text-muted-foreground mt-1">
-                      Gerencie suas placas solares e pacotes
-                    </p>
-                  </div>
+          <div className="p-8">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <div className="p-3 rounded-xl bg-primary/10">
+                  <Package className="w-6 h-6 text-primary" />
                 </div>
-                <Button
-                  onClick={handleAddProduct}
-                  className="bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl"
-                >
-                  <Plus className="w-5 h-5 mr-2" />
-                  Novo Produto
-                </Button>
+                <div>
+                  <h1 className="text-2xl font-semibold text-foreground">
+                    Catálogo de Produtos
+                  </h1>
+                  <p className="text-muted-foreground">
+                    Gerencie suas placas solares e pacotes
+                  </p>
+                </div>
               </div>
+              <Button
+                onClick={handleAddProduct}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+              >
+                <Plus className="w-5 h-5 mr-2" />
+                Novo Produto
+              </Button>
             </div>
 
             {/* Stats Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <div className="p-4 rounded-xl bg-card/50 border border-border/50">
+              <div className="p-4 rounded-xl bg-card border border-border">
                 <p className="text-sm text-muted-foreground">Total de Produtos</p>
-                <p className="text-2xl font-bold text-foreground mt-1">{products.length}</p>
+                <p className="text-2xl font-semibold text-foreground mt-1">{products.length}</p>
               </div>
-              <div className="p-4 rounded-xl bg-card/50 border border-border/50">
+              <div className="p-4 rounded-xl bg-card border border-border">
                 <p className="text-sm text-muted-foreground">Disponíveis</p>
-                <p className="text-2xl font-bold text-emerald-400 mt-1">{availableCount}</p>
+                <p className="text-2xl font-semibold text-primary mt-1">{availableCount}</p>
               </div>
-              <div className="p-4 rounded-xl bg-card/50 border border-border/50">
+              <div className="p-4 rounded-xl bg-card border border-border">
                 <p className="text-sm text-muted-foreground">Indisponíveis</p>
-                <p className="text-2xl font-bold text-red-400 mt-1">{unavailableCount}</p>
+                <p className="text-2xl font-semibold text-muted-foreground mt-1">{unavailableCount}</p>
               </div>
-              <div className="p-4 rounded-xl bg-card/50 border border-border/50">
+              <div className="p-4 rounded-xl bg-card border border-border">
                 <p className="text-sm text-muted-foreground">Com Financiamento</p>
-                <p className="text-2xl font-bold text-amber-400 mt-1">
+                <p className="text-2xl font-semibold text-primary mt-1">
                   {products.filter(p => p.aceita_financiamento === 'Sim').length}
                 </p>
               </div>
@@ -239,7 +236,7 @@ export default function Products() {
             {/* Products Grid */}
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
-                <Loader2 className="w-10 h-10 animate-spin text-amber-400 mb-4" />
+                <Loader2 className="w-10 h-10 animate-spin text-primary mb-4" />
                 <p className="text-muted-foreground">Carregando produtos...</p>
               </div>
             ) : products.length === 0 ? (
@@ -255,7 +252,7 @@ export default function Products() {
                 </p>
                 <Button
                   onClick={handleAddProduct}
-                  className="bg-amber-500 hover:bg-amber-600 text-black font-semibold rounded-xl"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                 >
                   <Plus className="w-5 h-5 mr-2" />
                   Adicionar Primeiro Produto
@@ -263,17 +260,12 @@ export default function Products() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {products.map((product, index) => (
-                  <div 
+                {products.map((product) => (
+                  <ProductCard 
                     key={product.id}
-                    className="animate-fade-in"
-                    style={{ animationDelay: `${index * 50}ms` }}
-                  >
-                    <ProductCard 
-                      product={product}
-                      onClick={() => handleProductClick(product)}
-                    />
-                  </div>
+                    product={product}
+                    onClick={() => handleProductClick(product)}
+                  />
                 ))}
               </div>
             )}

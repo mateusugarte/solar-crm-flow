@@ -2,23 +2,11 @@ import { Lead } from '@/pages/Dashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { TrendingUp } from 'lucide-react';
-import { format, subDays, parse } from 'date-fns';
+import { format, subDays } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 
 interface LeadsChartProps {
   leads: Lead[];
-}
-
-// Parse date from dd-MM-yy format to Date object
-function parseLeadDate(dateStr: string | null): Date | null {
-  if (!dateStr) return null;
-  try {
-    // Format: dd-MM-yy (ex: 03-12-25)
-    const parsed = parse(dateStr, 'dd-MM-yy', new Date());
-    return parsed;
-  } catch {
-    return null;
-  }
 }
 
 export function LeadsChart({ leads }: LeadsChartProps) {
@@ -27,7 +15,7 @@ export function LeadsChart({ leads }: LeadsChartProps) {
     const date = subDays(new Date(), 13 - i);
     return {
       date,
-      dateKey: format(date, 'dd-MM-yyyy'), // Format: 03-12-2025
+      dateKey: format(date, 'dd-MM-yyyy'),
       label: format(date, 'dd/MM', { locale: ptBR }),
     };
   });
@@ -35,7 +23,6 @@ export function LeadsChart({ leads }: LeadsChartProps) {
   const chartData = last14Days.map(({ dateKey, label }) => {
     const count = leads.filter(lead => {
       if (!lead.criado_em) return false;
-      // Direct comparison since both are in dd-MM-yyyy format
       return lead.criado_em === dateKey;
     }).length;
 
@@ -61,21 +48,22 @@ export function LeadsChart({ leads }: LeadsChartProps) {
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
-                <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
-                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                <linearGradient id="gradientLeads" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="hsl(45 100% 55%)" stopOpacity={0.6}/>
+                  <stop offset="50%" stopColor="hsl(45 100% 50%)" stopOpacity={0.3}/>
+                  <stop offset="100%" stopColor="hsl(45 100% 45%)" stopOpacity={0.05}/>
                 </linearGradient>
               </defs>
               <XAxis 
                 dataKey="label" 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
               />
               <YAxis 
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 11 }}
               />
               <Tooltip
                 contentStyle={{
@@ -84,16 +72,16 @@ export function LeadsChart({ leads }: LeadsChartProps) {
                   borderRadius: '8px',
                 }}
                 labelStyle={{ color: 'hsl(var(--foreground))' }}
-                itemStyle={{ color: 'hsl(var(--primary))' }}
+                itemStyle={{ color: 'hsl(45 100% 50%)' }}
               />
               <Area
-                type="monotone"
+                type="monotoneX"
                 dataKey="leads"
-                stroke="hsl(var(--primary))"
+                stroke="hsl(45 100% 50%)"
                 strokeWidth={2}
-                fill="url(#colorLeads)"
-                dot={{ fill: 'hsl(var(--primary))', strokeWidth: 0, r: 3 }}
-                activeDot={{ r: 5, fill: 'hsl(var(--primary))', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
+                fill="url(#gradientLeads)"
+                dot={false}
+                activeDot={{ r: 4, fill: 'hsl(45 100% 50%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
               />
             </AreaChart>
           </ResponsiveContainer>
