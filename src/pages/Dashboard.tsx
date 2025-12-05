@@ -84,13 +84,13 @@ export default function Dashboard() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background cyber-grid">
+      <div className="min-h-screen flex w-full bg-background animated-bg">
         <AppSidebar />
-        <main className="flex-1 overflow-auto">
+        <main className="flex-1 overflow-auto relative z-10">
           <DashboardHeader />
-          <div className="p-6 space-y-6 animate-fade-in">
+          <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">
+              <h2 className="text-lg font-medium text-foreground">
                 Dados do mês atual
               </h2>
               <span className="text-sm text-muted-foreground">
@@ -100,7 +100,7 @@ export default function Dashboard() {
             <StatsCards leads={currentMonthLeads} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <LeadsChart leads={currentMonthLeads} />
-              <ProposalChart leads={currentMonthLeads} />
+              <ProposalChart leads={leads} />
             </div>
             <LeadsTable leads={currentMonthLeads} loading={loading} onRefresh={fetchLeads} />
           </div>

@@ -96,11 +96,10 @@ export function StatsCards({ leads }: StatsCardsProps) {
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-      {stats.map((stat, index) => (
+      {stats.map((stat) => (
         <Card 
           key={stat.title}
-          className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300 animate-fade-in"
-          style={{ animationDelay: `${index * 50}ms` }}
+          className="border-border bg-card card-minimal-hover"
         >
           <CardContent className="p-4">
             <div className="flex items-center gap-3 mb-3">
@@ -108,7 +107,7 @@ export function StatsCards({ leads }: StatsCardsProps) {
                 <stat.icon className={`w-4 h-4 ${stat.color}`} />
               </div>
             </div>
-            <p className="text-2xl font-display font-bold text-foreground mb-1">
+            <p className="text-2xl font-semibold text-foreground mb-1">
               {stat.value}
             </p>
             <p className="text-xs text-muted-foreground">

@@ -46,13 +46,13 @@ export function LeadsChart({ leads }: LeadsChartProps) {
   });
 
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+    <Card className="border-border bg-card">
       <CardHeader className="flex flex-row items-center gap-3 pb-4">
         <div className="p-2 rounded-lg bg-primary/10">
           <TrendingUp className="w-5 h-5 text-primary" />
         </div>
         <div>
-          <CardTitle className="text-lg font-display">Leads por Dia</CardTitle>
+          <CardTitle className="text-lg font-medium">Leads por Dia</CardTitle>
           <p className="text-sm text-muted-foreground">Últimos 14 dias</p>
         </div>
       </CardHeader>
@@ -62,8 +62,8 @@ export function LeadsChart({ leads }: LeadsChartProps) {
             <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="hsl(45 100% 51%)" stopOpacity={0.3}/>
-                  <stop offset="95%" stopColor="hsl(45 100% 51%)" stopOpacity={0}/>
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.2}/>
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                 </linearGradient>
               </defs>
               <XAxis 
@@ -82,19 +82,18 @@ export function LeadsChart({ leads }: LeadsChartProps) {
                   backgroundColor: 'hsl(var(--card))',
                   border: '1px solid hsl(var(--border))',
                   borderRadius: '8px',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
                 }}
                 labelStyle={{ color: 'hsl(var(--foreground))' }}
-                itemStyle={{ color: 'hsl(45 100% 51%)' }}
+                itemStyle={{ color: 'hsl(var(--primary))' }}
               />
               <Area
                 type="monotone"
                 dataKey="leads"
-                stroke="hsl(45 100% 51%)"
-                strokeWidth={3}
+                stroke="hsl(var(--primary))"
+                strokeWidth={2}
                 fill="url(#colorLeads)"
-                dot={{ fill: 'hsl(45 100% 51%)', strokeWidth: 0, r: 4 }}
-                activeDot={{ r: 6, fill: 'hsl(45 100% 51%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
+                dot={{ fill: 'hsl(var(--primary))', strokeWidth: 0, r: 3 }}
+                activeDot={{ r: 5, fill: 'hsl(var(--primary))', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
               />
             </AreaChart>
           </ResponsiveContainer>

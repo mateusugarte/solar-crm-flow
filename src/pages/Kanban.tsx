@@ -170,9 +170,9 @@ export default function Kanban() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background animated-bg">
         <AppSidebar />
-        <main className="flex-1 overflow-hidden flex flex-col">
+        <main className="flex-1 overflow-hidden flex flex-col relative z-10">
           <DashboardHeader />
           <div className="flex-1 p-6 overflow-hidden flex flex-col">
             {/* Date Filter and Create Button */}
