@@ -91,13 +91,13 @@ export default function Dashboard() {
           <div className="p-6 space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-medium text-foreground">
-                Dados do mês atual
+                Visão Geral
               </h2>
               <span className="text-sm text-muted-foreground">
-                {currentMonthLeads.length} leads este mês
+                {leads.length} leads totais • {currentMonthLeads.length} este mês
               </span>
             </div>
-            <StatsCards leads={currentMonthLeads} />
+            <StatsCards leads={leads} />
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <LeadsChart leads={currentMonthLeads} />
               <ProposalChart leads={leads} />
