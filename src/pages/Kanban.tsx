@@ -7,6 +7,7 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { KanbanBoard } from '@/components/kanban/KanbanBoard';
 import { LeadDrawer } from '@/components/kanban/LeadDrawer';
+import { CreateLeadDialog } from '@/components/kanban/CreateLeadDialog';
 import { Loader2, Calendar } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -174,24 +175,27 @@ export default function Kanban() {
         <main className="flex-1 overflow-hidden flex flex-col">
           <DashboardHeader />
           <div className="flex-1 p-6 overflow-hidden flex flex-col">
-            {/* Date Filter */}
-            <div className="flex items-center gap-3 mb-4">
-              <Calendar className="w-4 h-4 text-muted-foreground" />
-              <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}>
-                <SelectTrigger className="w-48 bg-card border-border">
-                  <SelectValue placeholder="Filtrar por data" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos os leads</SelectItem>
-                  <SelectItem value="today">Hoje</SelectItem>
-                  <SelectItem value="3days">Últimos 3 dias</SelectItem>
-                  <SelectItem value="7days">Últimos 7 dias</SelectItem>
-                  <SelectItem value="30days">Últimos 30 dias</SelectItem>
-                </SelectContent>
-              </Select>
-              <span className="text-sm text-muted-foreground">
-                {filteredLeads.length} lead{filteredLeads.length !== 1 ? 's' : ''}
-              </span>
+            {/* Date Filter and Create Button */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Calendar className="w-4 h-4 text-muted-foreground" />
+                <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}>
+                  <SelectTrigger className="w-48 bg-card border-border">
+                    <SelectValue placeholder="Filtrar por data" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos os leads</SelectItem>
+                    <SelectItem value="today">Hoje</SelectItem>
+                    <SelectItem value="3days">Últimos 3 dias</SelectItem>
+                    <SelectItem value="7days">Últimos 7 dias</SelectItem>
+                    <SelectItem value="30days">Últimos 30 dias</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span className="text-sm text-muted-foreground">
+                  {filteredLeads.length} lead{filteredLeads.length !== 1 ? 's' : ''}
+                </span>
+              </div>
+              <CreateLeadDialog onCreated={fetchLeads} />
             </div>
             
             {loading ? (

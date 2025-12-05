@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Kanban from "./pages/Kanban";
+import Vendas from "./pages/Vendas";
 import ResgateLeads from "./pages/ResgateLeads";
 import NotFound from "./pages/NotFound";
 
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/products" element={<Products />} />
             <Route path="/kanban" element={<Kanban />} />
+            <Route path="/vendas" element={<Vendas />} />
             <Route path="/resgate" element={<ResgateLeads />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

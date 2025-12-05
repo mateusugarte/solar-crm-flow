@@ -9,12 +9,13 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Package, LogOut, ChevronLeft, Kanban, ArrowRight, UserSearch } from 'lucide-react';
+import { LayoutDashboard, Package, LogOut, ChevronLeft, Kanban, ArrowRight, UserSearch, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
   { title: 'Dashboard', url: '/dashboard', icon: LayoutDashboard },
   { title: 'CRM Kanban', url: '/kanban', icon: Kanban },
+  { title: 'Vendas', url: '/vendas', icon: ShoppingCart },
   { title: 'Produtos', url: '/products', icon: Package },
   { title: 'Resgate', url: '/resgate', icon: UserSearch },
 ];
