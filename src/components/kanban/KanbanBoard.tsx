@@ -14,6 +14,10 @@ export const COLUMNS = [
   { id: 'Qualificado', title: 'Qualificado', color: 'hsl(142 76% 45%)' },
   { id: 'Desqualificado', title: 'Desqualificado', color: 'hsl(0 70% 55%)' },
   { id: 'Interesse', title: 'Interesse', color: 'hsl(45 100% 50%)' },
+  { id: 'Elaborando Proposta', title: 'Elaborando Proposta', color: 'hsl(280 70% 60%)' },
+  { id: 'Proposta Enviada', title: 'Proposta Enviada', color: 'hsl(190 80% 50%)' },
+  { id: 'Venda Concluida', title: 'Venda Concluída', color: 'hsl(120 70% 40%)' },
+  { id: 'Proposta Rejeitada', title: 'Proposta Rejeitada', color: 'hsl(350 70% 50%)' },
 ];
 
 export function KanbanBoard({ leads, onLeadClick, onDragEnd }: KanbanBoardProps) {
