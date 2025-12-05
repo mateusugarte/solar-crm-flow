@@ -26,10 +26,6 @@ const isMoreThan8HoursAgo = (dateStr: string | null): boolean => {
 export function StatsCards({ leads }: StatsCardsProps) {
   const total = leads.length;
   
-  const qualificados = leads.filter(l => 
-    l.qualificacao?.toLowerCase() === 'qualificado'
-  ).length;
-  
   const elaborandoProposta = leads.filter(l => 
     l.qualificacao?.toLowerCase() === 'elaborando proposta'
   ).length;
@@ -57,9 +53,14 @@ export function StatsCards({ leads }: StatsCardsProps) {
     isMoreThan8HoursAgo(l.ultima_mensagem)
   ).length;
   
-  // Taxa de conversão: vendas / total de propostas (enviadas + rejeitadas + vendas)
-  const totalPropostas = propostasEnviadas + vendasConcluidas + propostasRejeitadas;
-  const taxaConversao = totalPropostas > 0 ? Math.round((vendasConcluidas / totalPropostas) * 100) : 0;
+  // Qualificados: inclui qualificado + proposta enviada + proposta rejeitada + venda concluida
+  const qualificadosBase = leads.filter(l => 
+    l.qualificacao?.toLowerCase() === 'qualificado'
+  ).length;
+  const totalQualificados = qualificadosBase + propostasEnviadas + propostasRejeitadas + vendasConcluidas;
+  
+  // Taxa de conversão: vendas / total de qualificados (qualificado + enviada + rejeitada + venda)
+  const taxaConversao = totalQualificados > 0 ? Math.round((vendasConcluidas / totalQualificados) * 100) : 0;
 
   const stats = [
     {
@@ -74,7 +75,7 @@ export function StatsCards({ leads }: StatsCardsProps) {
     },
     {
       title: 'Qualificados',
-      value: qualificados,
+      value: totalQualificados,
       icon: UserCheck,
     },
     {
