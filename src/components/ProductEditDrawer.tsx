@@ -200,7 +200,7 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate, onDel
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Zap className="w-3 h-3" /> Eficiência
+                    <Zap className="w-3 h-3 text-primary" /> Eficiência
                   </Label>
                   <Input
                     value={formData.eficiencia || ''}
@@ -211,7 +211,7 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate, onDel
 
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Ruler className="w-3 h-3" /> Dimensão
+                    <Ruler className="w-3 h-3 text-primary" /> Dimensão
                   </Label>
                   <Input
                     value={formData.dimensao || ''}
@@ -222,7 +222,7 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate, onDel
 
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Shield className="w-3 h-3" /> Garantia
+                    <Shield className="w-3 h-3 text-primary" /> Garantia
                   </Label>
                   <Input
                     value={formData.garantia || ''}
@@ -233,7 +233,7 @@ export function ProductEditDrawer({ product, open, onOpenChange, onUpdate, onDel
 
                 <div className="space-y-2">
                   <Label className="flex items-center gap-2 text-muted-foreground">
-                    <Clock className="w-3 h-3" /> Prazo
+                    <Clock className="w-3 h-3 text-primary" /> Prazo
                   </Label>
                   <Input
                     value={formData.prazo || ''}
