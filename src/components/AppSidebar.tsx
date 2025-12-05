@@ -1,6 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
-import { motion } from 'framer-motion';
 import {
   Sidebar,
   SidebarContent,
@@ -9,7 +8,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
-import { LayoutDashboard, Package, LogOut, ChevronLeft, Kanban, ArrowRight, UserSearch, ShoppingCart } from 'lucide-react';
+import { LayoutDashboard, Package, LogOut, ChevronLeft, Kanban, UserSearch, ShoppingCart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
@@ -19,8 +18,6 @@ const menuItems = [
   { title: 'Produtos', url: '/products', icon: Package },
   { title: 'Resgate', url: '/resgate', icon: UserSearch },
 ];
-
-const ACCENT_COLOR = '#F59E0B'; // Yellow/amber color
 
 export function AppSidebar() {
   const { signOut } = useAuth();
@@ -47,63 +44,28 @@ export function AppSidebar() {
       </SidebarHeader>
 
       <SidebarContent className="px-4 py-6">
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
           {menuItems.map((item) => {
             const isActive = location.pathname === item.url;
             return (
-              <motion.div
+              <button
                 key={item.title}
                 className={cn(
-                  'group flex items-center gap-3 cursor-pointer rounded-lg transition-colors',
-                  collapsed ? 'justify-center p-3' : 'px-3 py-3'
+                  'flex items-center gap-3 rounded-lg transition-all duration-200',
+                  collapsed ? 'justify-center p-3' : 'px-3 py-2.5',
+                  isActive 
+                    ? 'bg-primary/10 text-primary' 
+                    : 'text-sidebar-foreground hover:bg-sidebar-accent hover:text-primary'
                 )}
-                initial="initial"
-                whileHover="hover"
-                animate={isActive ? 'active' : 'initial'}
                 onClick={() => navigate(item.url)}
               >
+                <item.icon className="w-5 h-5 shrink-0" />
                 {!collapsed && (
-                  <motion.div
-                    variants={{
-                      initial: { x: '-100%', opacity: 0 },
-                      hover: { x: 0, opacity: 1 },
-                      active: { x: 0, opacity: 1 },
-                    }}
-                    transition={{ duration: 0.3, ease: 'easeOut' }}
-                    className="z-0"
-                    style={{ color: ACCENT_COLOR }}
-                  >
-                    <ArrowRight strokeWidth={3} className="w-5 h-5" />
-                  </motion.div>
+                  <span className="font-medium text-sm">
+                    {item.title}
+                  </span>
                 )}
-
-                <motion.div
-                  className="flex items-center gap-3"
-                  variants={{
-                    initial: { x: collapsed ? 0 : -20, color: 'inherit' },
-                    hover: { x: 0, color: ACCENT_COLOR },
-                    active: { x: 0, color: ACCENT_COLOR },
-                  }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                >
-                  <item.icon 
-                    className={cn(
-                      'w-5 h-5 shrink-0 transition-colors',
-                      isActive ? 'text-amber-400' : 'text-sidebar-foreground group-hover:text-amber-400'
-                    )} 
-                  />
-                  {!collapsed && (
-                    <span 
-                      className={cn(
-                        'font-semibold text-lg transition-colors',
-                        isActive ? 'text-amber-400' : 'text-sidebar-foreground group-hover:text-amber-400'
-                      )}
-                    >
-                      {item.title}
-                    </span>
-                  )}
-                </motion.div>
-              </motion.div>
+              </button>
             );
           })}
         </div>
@@ -114,7 +76,7 @@ export function AppSidebar() {
           variant="ghost"
           size="sm"
           onClick={toggleSidebar}
-          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent hover:text-amber-400"
+          className="w-full justify-start gap-3 text-sidebar-foreground hover:bg-sidebar-accent hover:text-primary"
         >
           <ChevronLeft className={cn('w-5 h-5 transition-transform', collapsed && 'rotate-180')} />
           {!collapsed && <span>Recolher</span>}

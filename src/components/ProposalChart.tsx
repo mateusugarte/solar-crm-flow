@@ -28,17 +28,21 @@ export function ProposalChart({ leads }: ProposalChartProps) {
   const chartData = last14Days.map(({ dateKey, label }) => {
     const propostasEnviadas = leads.filter(lead => {
       if (!lead.criado_em) return false;
-      return lead.criado_em === dateKey && lead.qualificacao?.toLowerCase() === 'proposta enviada';
+      // Extract just the date part (dd-MM-yyyy) from criado_em
+      const leadDatePart = lead.criado_em.split(' ')[0];
+      return leadDatePart === dateKey && lead.qualificacao?.toLowerCase() === 'proposta enviada';
     }).length;
 
     const vendasConcluidas = leads.filter(lead => {
       if (!lead.criado_em) return false;
-      return lead.criado_em === dateKey && lead.qualificacao?.toLowerCase() === 'venda concluida';
+      const leadDatePart = lead.criado_em.split(' ')[0];
+      return leadDatePart === dateKey && lead.qualificacao?.toLowerCase() === 'venda concluida';
     }).length;
 
     const propostasRejeitadas = leads.filter(lead => {
       if (!lead.criado_em) return false;
-      return lead.criado_em === dateKey && lead.qualificacao?.toLowerCase() === 'proposta rejeitada';
+      const leadDatePart = lead.criado_em.split(' ')[0];
+      return leadDatePart === dateKey && lead.qualificacao?.toLowerCase() === 'proposta rejeitada';
     }).length;
 
     return {
@@ -50,13 +54,13 @@ export function ProposalChart({ leads }: ProposalChartProps) {
   });
 
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
+    <Card className="border-border bg-card">
       <CardHeader className="flex flex-row items-center gap-3 pb-4">
-        <div className="p-2 rounded-lg bg-cyan-500/10">
-          <FileText className="w-5 h-5 text-cyan-400" />
+        <div className="p-2 rounded-lg bg-primary/10">
+          <FileText className="w-5 h-5 text-primary" />
         </div>
         <div>
-          <CardTitle className="text-lg font-display">Propostas e Vendas</CardTitle>
+          <CardTitle className="text-lg font-medium">Propostas e Vendas</CardTitle>
           <p className="text-sm text-muted-foreground">Últimos 14 dias</p>
         </div>
       </CardHeader>
@@ -80,7 +84,6 @@ export function ProposalChart({ leads }: ProposalChartProps) {
                   backgroundColor: 'hsl(var(--card))',
                   border: '1px solid hsl(var(--border))',
                   borderRadius: '8px',
-                  boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
                 }}
                 labelStyle={{ color: 'hsl(var(--foreground))' }}
               />
@@ -98,26 +101,26 @@ export function ProposalChart({ leads }: ProposalChartProps) {
               <Line
                 type="monotone"
                 dataKey="propostasEnviadas"
-                stroke="hsl(190 80% 50%)"
-                strokeWidth={3}
-                dot={{ fill: 'hsl(190 80% 50%)', strokeWidth: 0, r: 4 }}
-                activeDot={{ r: 6, fill: 'hsl(190 80% 50%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
+                stroke="hsl(var(--primary))"
+                strokeWidth={2}
+                dot={{ fill: 'hsl(var(--primary))', strokeWidth: 0, r: 3 }}
+                activeDot={{ r: 5, fill: 'hsl(var(--primary))', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
               />
               <Line
                 type="monotone"
                 dataKey="vendasConcluidas"
-                stroke="hsl(120 70% 40%)"
-                strokeWidth={3}
-                dot={{ fill: 'hsl(120 70% 40%)', strokeWidth: 0, r: 4 }}
-                activeDot={{ r: 6, fill: 'hsl(120 70% 40%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
+                stroke="hsl(142 76% 40%)"
+                strokeWidth={2}
+                dot={{ fill: 'hsl(142 76% 40%)', strokeWidth: 0, r: 3 }}
+                activeDot={{ r: 5, fill: 'hsl(142 76% 40%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
               />
               <Line
                 type="monotone"
                 dataKey="propostasRejeitadas"
-                stroke="hsl(350 70% 50%)"
-                strokeWidth={3}
-                dot={{ fill: 'hsl(350 70% 50%)', strokeWidth: 0, r: 4 }}
-                activeDot={{ r: 6, fill: 'hsl(350 70% 50%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
+                stroke="hsl(0 70% 50%)"
+                strokeWidth={2}
+                dot={{ fill: 'hsl(0 70% 50%)', strokeWidth: 0, r: 3 }}
+                activeDot={{ r: 5, fill: 'hsl(0 70% 50%)', stroke: 'hsl(var(--background))', strokeWidth: 2 }}
               />
             </LineChart>
           </ResponsiveContainer>

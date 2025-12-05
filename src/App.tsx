@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
+import { PageTransition } from "@/components/PageTransition";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
@@ -21,16 +22,18 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/kanban" element={<Kanban />} />
-            <Route path="/vendas" element={<Vendas />} />
-            <Route path="/resgate" element={<ResgateLeads />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <PageTransition>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Index />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/kanban" element={<Kanban />} />
+              <Route path="/vendas" element={<Vendas />} />
+              <Route path="/resgate" element={<ResgateLeads />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </PageTransition>
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
