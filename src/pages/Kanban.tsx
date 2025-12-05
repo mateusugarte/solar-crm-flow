@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -7,8 +7,10 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { KanbanBoard } from '@/components/kanban/KanbanBoard';
 import { LeadDrawer } from '@/components/kanban/LeadDrawer';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Calendar } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { parse, isAfter, subDays, startOfDay } from 'date-fns';
 
 export interface Lead {
   id: string;
@@ -22,7 +24,17 @@ export interface Lead {
   criado_em: string | null;
   cpf: string | null;
   pausar_ia: string | null;
+  // Proposal fields
+  valor_proposta: string | null;
+  forma_pagamento: string | null;
+  produto_proposta: string | null;
+  prazo_instalacao: string | null;
+  info_proposta: string | null;
+  motivo_rejeicao: string | null;
+  pdf_url: string | null;
 }
+
+type DateFilter = 'today' | '3days' | '7days' | '30days' | 'all';
 
 export default function Kanban() {
   const { user, loading: authLoading } = useAuth();
@@ -31,6 +43,7 @@ export default function Kanban() {
   const [loading, setLoading] = useState(true);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [dateFilter, setDateFilter] = useState<DateFilter>('all');
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -52,10 +65,44 @@ export default function Kanban() {
       .order('criado_em', { ascending: false });
     
     if (!error && data) {
-      setLeads(data);
+      setLeads(data as Lead[]);
     }
     setLoading(false);
   };
+
+  const filteredLeads = useMemo(() => {
+    if (dateFilter === 'all') return leads;
+
+    const now = new Date();
+    let cutoffDate: Date;
+
+    switch (dateFilter) {
+      case 'today':
+        cutoffDate = startOfDay(now);
+        break;
+      case '3days':
+        cutoffDate = startOfDay(subDays(now, 3));
+        break;
+      case '7days':
+        cutoffDate = startOfDay(subDays(now, 7));
+        break;
+      case '30days':
+        cutoffDate = startOfDay(subDays(now, 30));
+        break;
+      default:
+        return leads;
+    }
+
+    return leads.filter(lead => {
+      if (!lead.criado_em) return false;
+      try {
+        const leadDate = parse(lead.criado_em, 'dd-MM-yyyy', new Date());
+        return isAfter(leadDate, cutoffDate) || leadDate.getTime() === cutoffDate.getTime();
+      } catch {
+        return false;
+      }
+    });
+  }, [leads, dateFilter]);
 
   const handleLeadClick = (lead: Lead) => {
     setSelectedLead(lead);
@@ -73,6 +120,13 @@ export default function Kanban() {
         resumo: updatedLead.resumo,
         cpf: updatedLead.cpf,
         pausar_ia: updatedLead.pausar_ia,
+        valor_proposta: updatedLead.valor_proposta,
+        forma_pagamento: updatedLead.forma_pagamento,
+        produto_proposta: updatedLead.produto_proposta,
+        prazo_instalacao: updatedLead.prazo_instalacao,
+        info_proposta: updatedLead.info_proposta,
+        motivo_rejeicao: updatedLead.motivo_rejeicao,
+        pdf_url: updatedLead.pdf_url,
       })
       .eq('id', updatedLead.id);
 
@@ -119,14 +173,34 @@ export default function Kanban() {
         <AppSidebar />
         <main className="flex-1 overflow-hidden flex flex-col">
           <DashboardHeader />
-          <div className="flex-1 p-6 overflow-hidden">
+          <div className="flex-1 p-6 overflow-hidden flex flex-col">
+            {/* Date Filter */}
+            <div className="flex items-center gap-3 mb-4">
+              <Calendar className="w-4 h-4 text-muted-foreground" />
+              <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}>
+                <SelectTrigger className="w-48 bg-card border-border">
+                  <SelectValue placeholder="Filtrar por data" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os leads</SelectItem>
+                  <SelectItem value="today">Hoje</SelectItem>
+                  <SelectItem value="3days">Últimos 3 dias</SelectItem>
+                  <SelectItem value="7days">Últimos 7 dias</SelectItem>
+                  <SelectItem value="30days">Últimos 30 dias</SelectItem>
+                </SelectContent>
+              </Select>
+              <span className="text-sm text-muted-foreground">
+                {filteredLeads.length} lead{filteredLeads.length !== 1 ? 's' : ''}
+              </span>
+            </div>
+            
             {loading ? (
               <div className="flex items-center justify-center h-full">
                 <Loader2 className="w-8 h-8 animate-spin text-primary" />
               </div>
             ) : (
               <KanbanBoard 
-                leads={leads} 
+                leads={filteredLeads} 
                 onLeadClick={handleLeadClick}
                 onDragEnd={handleDragEnd}
               />

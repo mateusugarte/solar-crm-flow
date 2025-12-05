@@ -123,44 +123,65 @@ export type Database = {
         Row: {
           cpf: string | null
           criado_em: string | null
+          forma_pagamento: string | null
           id: string
+          info_proposta: string | null
+          motivo_rejeicao: string | null
           nome_completo: string | null
           nome_whatsapp: string | null
           numero: string
           Oportunidade: string | null
           pausar_ia: string | null
+          pdf_url: string | null
+          prazo_instalacao: string | null
+          produto_proposta: string | null
           qualificacao: string | null
           renda: string | null
           resumo: string | null
           ultima_mensagem: string | null
+          valor_proposta: string | null
         }
         Insert: {
           cpf?: string | null
           criado_em?: string | null
+          forma_pagamento?: string | null
           id?: string
+          info_proposta?: string | null
+          motivo_rejeicao?: string | null
           nome_completo?: string | null
           nome_whatsapp?: string | null
           numero: string
           Oportunidade?: string | null
           pausar_ia?: string | null
+          pdf_url?: string | null
+          prazo_instalacao?: string | null
+          produto_proposta?: string | null
           qualificacao?: string | null
           renda?: string | null
           resumo?: string | null
           ultima_mensagem?: string | null
+          valor_proposta?: string | null
         }
         Update: {
           cpf?: string | null
           criado_em?: string | null
+          forma_pagamento?: string | null
           id?: string
+          info_proposta?: string | null
+          motivo_rejeicao?: string | null
           nome_completo?: string | null
           nome_whatsapp?: string | null
           numero?: string
           Oportunidade?: string | null
           pausar_ia?: string | null
+          pdf_url?: string | null
+          prazo_instalacao?: string | null
+          produto_proposta?: string | null
           qualificacao?: string | null
           renda?: string | null
           resumo?: string | null
           ultima_mensagem?: string | null
+          valor_proposta?: string | null
         }
         Relationships: []
       }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +9,7 @@ import { StatsCards } from '@/components/StatsCards';
 import { LeadsTable } from '@/components/LeadsTable';
 import { LeadsChart } from '@/components/LeadsChart';
 import { Loader2 } from 'lucide-react';
+import { parse, isAfter, startOfMonth, endOfMonth } from 'date-fns';
 
 export interface Lead {
   id: string;
@@ -53,6 +54,23 @@ export default function Dashboard() {
     setLoading(false);
   };
 
+  // Filter leads for current month only
+  const currentMonthLeads = useMemo(() => {
+    const now = new Date();
+    const monthStart = startOfMonth(now);
+    const monthEnd = endOfMonth(now);
+
+    return leads.filter(lead => {
+      if (!lead.criado_em) return false;
+      try {
+        const leadDate = parse(lead.criado_em, 'dd-MM-yyyy', new Date());
+        return leadDate >= monthStart && leadDate <= monthEnd;
+      } catch {
+        return false;
+      }
+    });
+  }, [leads]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -70,9 +88,17 @@ export default function Dashboard() {
         <main className="flex-1 overflow-auto">
           <DashboardHeader />
           <div className="p-6 space-y-6 animate-fade-in">
-            <StatsCards leads={leads} />
-            <LeadsChart leads={leads} />
-            <LeadsTable leads={leads} loading={loading} onRefresh={fetchLeads} />
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold text-foreground">
+                Dados do mês atual
+              </h2>
+              <span className="text-sm text-muted-foreground">
+                {currentMonthLeads.length} leads este mês
+              </span>
+            </div>
+            <StatsCards leads={currentMonthLeads} />
+            <LeadsChart leads={currentMonthLeads} />
+            <LeadsTable leads={currentMonthLeads} loading={loading} onRefresh={fetchLeads} />
           </div>
         </main>
       </div>
