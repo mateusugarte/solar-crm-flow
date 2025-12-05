@@ -8,8 +8,9 @@ import { DashboardHeader } from '@/components/DashboardHeader';
 import { StatsCards } from '@/components/StatsCards';
 import { LeadsTable } from '@/components/LeadsTable';
 import { LeadsChart } from '@/components/LeadsChart';
+import { ProposalChart } from '@/components/ProposalChart';
 import { Loader2 } from 'lucide-react';
-import { parse, isAfter, startOfMonth, endOfMonth } from 'date-fns';
+import { parse, startOfMonth, endOfMonth } from 'date-fns';
 
 export interface Lead {
   id: string;
@@ -97,7 +98,10 @@ export default function Dashboard() {
               </span>
             </div>
             <StatsCards leads={currentMonthLeads} />
-            <LeadsChart leads={currentMonthLeads} />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <LeadsChart leads={currentMonthLeads} />
+              <ProposalChart leads={currentMonthLeads} />
+            </div>
             <LeadsTable leads={currentMonthLeads} loading={loading} onRefresh={fetchLeads} />
           </div>
         </main>

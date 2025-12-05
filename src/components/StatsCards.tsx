@@ -1,6 +1,6 @@
 import { Lead } from '@/pages/Dashboard';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, UserCheck, UserX, Flame, MessageSquare, TrendingUp, Clock } from 'lucide-react';
+import { Users, UserCheck, UserX, Flame, TrendingUp, Clock, FileCheck, ShoppingCart, FileX } from 'lucide-react';
 import { parse, differenceInHours } from 'date-fns';
 
 interface StatsCardsProps {
@@ -26,21 +26,26 @@ const isMoreThan8HoursAgo = (dateStr: string | null): boolean => {
 export function StatsCards({ leads }: StatsCardsProps) {
   const total = leads.length;
   const qualificados = leads.filter(l => 
-    l.qualificacao?.toLowerCase().includes('qualificado') && 
-    !l.qualificacao?.toLowerCase().includes('desqualificado')
+    l.qualificacao?.toLowerCase() === 'qualificado'
   ).length;
   const desqualificados = leads.filter(l => 
-    l.qualificacao?.toLowerCase().includes('desqualificado')
+    l.qualificacao?.toLowerCase() === 'desqualificado'
   ).length;
   const aquecendo = leads.filter(l => 
-    l.qualificacao?.toLowerCase().includes('aquecendo')
-  ).length;
-  const interesse = leads.filter(l => 
-    l.qualificacao?.toLowerCase().includes('interesse')
+    l.qualificacao?.toLowerCase() === 'aquecendo'
   ).length;
   const followUp = leads.filter(l => 
     l.qualificacao !== 'Desqualificado' && 
     isMoreThan8HoursAgo(l.ultima_mensagem)
+  ).length;
+  const propostasEnviadas = leads.filter(l => 
+    l.qualificacao?.toLowerCase() === 'proposta enviada'
+  ).length;
+  const vendasConcluidas = leads.filter(l => 
+    l.qualificacao?.toLowerCase() === 'venda concluida'
+  ).length;
+  const propostasRejeitadas = leads.filter(l => 
+    l.qualificacao?.toLowerCase() === 'proposta rejeitada'
   ).length;
   const taxaQualificacao = total > 0 ? Math.round((qualificados / total) * 100) : 0;
 
@@ -67,25 +72,25 @@ export function StatsCards({ leads }: StatsCardsProps) {
       bgColor: 'bg-success/10',
     },
     {
-      title: 'Desqualificados',
-      value: desqualificados,
-      icon: UserX,
-      color: 'text-destructive',
-      bgColor: 'bg-destructive/10',
+      title: 'Propostas Enviadas',
+      value: propostasEnviadas,
+      icon: FileCheck,
+      color: 'text-cyan-400',
+      bgColor: 'bg-cyan-500/10',
     },
     {
-      title: 'Aquecendo',
-      value: aquecendo,
-      icon: Flame,
-      color: 'text-warning',
-      bgColor: 'bg-warning/10',
+      title: 'Vendas Concluídas',
+      value: vendasConcluidas,
+      icon: ShoppingCart,
+      color: 'text-green-400',
+      bgColor: 'bg-green-500/10',
     },
     {
-      title: 'Follow-up',
-      value: followUp,
-      icon: Clock,
-      color: 'text-orange-400',
-      bgColor: 'bg-orange-500/10',
+      title: 'Propostas Rejeitadas',
+      value: propostasRejeitadas,
+      icon: FileX,
+      color: 'text-rose-400',
+      bgColor: 'bg-rose-500/10',
     },
   ];
 
