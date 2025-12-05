@@ -110,22 +110,16 @@ export default function ResgateLeads() {
       title: 'Follow-up Pendente',
       value: followUp.length,
       icon: Clock,
-      color: 'text-orange-400',
-      bgColor: 'bg-orange-500/10',
     },
     {
       title: 'Oportunidades',
       value: oportunidades.length,
       icon: Target,
-      color: 'text-green-400',
-      bgColor: 'bg-green-500/10',
     },
     {
       title: 'Desqualificados',
       value: desqualificados.length,
       icon: UserX,
-      color: 'text-red-400',
-      bgColor: 'bg-red-500/10',
     },
     {
       title: 'Taxa de Resgate',
@@ -133,8 +127,6 @@ export default function ResgateLeads() {
         ? `${Math.round((oportunidades.length / desqualificados.length) * 100)}%` 
         : '0%',
       icon: TrendingUp,
-      color: 'text-primary',
-      bgColor: 'bg-primary/10',
     },
   ];
 
@@ -218,14 +210,14 @@ export default function ResgateLeads() {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background animated-bg">
         <AppSidebar />
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col relative z-10">
           <DashboardHeader />
           <main className="flex-1 p-6">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h1 className="text-2xl font-bold text-foreground">Resgate de Leads</h1>
+                <h1 className="text-2xl font-semibold text-foreground">Resgate de Leads</h1>
                 <p className="text-muted-foreground">Follow-up e oportunidades perdidas</p>
               </div>
               <Button 
@@ -241,18 +233,18 @@ export default function ResgateLeads() {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              {stats.map((stat, index) => (
+              {stats.map((stat) => (
                 <Card 
                   key={stat.title}
-                  className="border-border/50 bg-card/50 backdrop-blur-sm hover:border-primary/30 transition-all duration-300"
+                  className="border-border bg-card card-minimal-hover"
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                        <stat.icon className={`w-4 h-4 ${stat.color}`} />
+                      <div className="p-2 rounded-lg bg-primary/10">
+                        <stat.icon className="w-4 h-4 text-primary" />
                       </div>
                     </div>
-                    <p className="text-2xl font-display font-bold text-foreground mb-1">
+                    <p className="text-2xl font-semibold text-foreground mb-1">
                       {stat.value}
                     </p>
                     <p className="text-xs text-muted-foreground">
@@ -276,10 +268,10 @@ export default function ResgateLeads() {
               </TabsList>
 
               <TabsContent value="followup">
-                <Card className="bg-card border-border/50">
+                <Card className="bg-card border-border">
                   <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Clock className="w-5 h-5 text-orange-400" />
+                    <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                      <Clock className="w-5 h-5 text-primary" />
                       Leads sem resposta há mais de 8 horas
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
@@ -293,10 +285,10 @@ export default function ResgateLeads() {
               </TabsContent>
 
               <TabsContent value="oportunidades">
-                <Card className="bg-card border-border/50">
+                <Card className="bg-card border-border">
                   <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                      <Target className="w-5 h-5 text-green-400" />
+                    <CardTitle className="flex items-center gap-2 text-lg font-medium">
+                      <Target className="w-5 h-5 text-primary" />
                       Oportunidades de Resgate
                     </CardTitle>
                     <p className="text-sm text-muted-foreground">
