@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { X, Save, Phone, User, Wallet, FileText, Calendar, Brain, Upload, File, Trash2 } from 'lucide-react';
+import { X, Save, Phone, User, Wallet, FileText, Calendar, Brain, Upload, File, Trash2, ArrowRightLeft } from 'lucide-react';
 import { COLUMNS } from './KanbanBoard';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -116,6 +116,34 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
           </Button>
         </div>
 
+        {/* Move To Section */}
+        <div className="p-4 border-b border-border bg-muted/30">
+          <Label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
+            <ArrowRightLeft className="w-4 h-4" /> Mover para
+          </Label>
+          <Select
+            value={formData.qualificacao || ''}
+            onValueChange={(value) => setFormData({ ...formData, qualificacao: value })}
+          >
+            <SelectTrigger className="bg-card border-border">
+              <SelectValue placeholder="Selecione uma coluna..." />
+            </SelectTrigger>
+            <SelectContent>
+              {COLUMNS.map(col => (
+                <SelectItem key={col.id} value={col.id}>
+                  <div className="flex items-center gap-2">
+                    <div 
+                      className="w-3 h-3 rounded-full"
+                      style={{ backgroundColor: col.color }}
+                    />
+                    {col.title}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           <div className="space-y-4">
@@ -151,33 +179,6 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
                 onChange={(e) => setFormData({ ...formData, nome_whatsapp: e.target.value })}
                 className="bg-muted/50 border-border/50"
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-muted-foreground">
-                Qualificação
-              </Label>
-              <Select
-                value={formData.qualificacao || ''}
-                onValueChange={(value) => setFormData({ ...formData, qualificacao: value })}
-              >
-                <SelectTrigger className="bg-muted/50 border-border/50">
-                  <SelectValue placeholder="Selecione..." />
-                </SelectTrigger>
-                <SelectContent>
-                  {COLUMNS.map(col => (
-                    <SelectItem key={col.id} value={col.id}>
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: col.color }}
-                        />
-                        {col.title}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             <div className="space-y-2">
