@@ -20,6 +20,7 @@ interface Lead {
   valor_proposta: string | null;
   forma_pagamento: string | null;
   produto_proposta: string | null;
+  criado_em: string | null;
 }
 
 export default function Vendas() {
@@ -98,8 +99,8 @@ export default function Vendas() {
               <Card className="border-border bg-card">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 rounded-lg bg-green-500/10">
-                      <ShoppingCart className="w-4 h-4 text-green-500" />
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <ShoppingCart className="w-4 h-4 text-primary" />
                     </div>
                   </div>
                   <p className="text-2xl font-semibold text-foreground">{stats.totalVendas}</p>
@@ -124,8 +125,8 @@ export default function Vendas() {
               <Card className="border-border bg-card">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 rounded-lg bg-blue-500/10">
-                      <TrendingUp className="w-4 h-4 text-blue-500" />
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <TrendingUp className="w-4 h-4 text-primary" />
                     </div>
                   </div>
                   <p className="text-2xl font-semibold text-foreground">
@@ -138,8 +139,8 @@ export default function Vendas() {
               <Card className="border-border bg-card">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="p-2 rounded-lg bg-cyan-500/10">
-                      <FileCheck className="w-4 h-4 text-cyan-500" />
+                    <div className="p-2 rounded-lg bg-primary/10">
+                      <FileCheck className="w-4 h-4 text-primary" />
                     </div>
                   </div>
                   <p className="text-2xl font-semibold text-foreground">{stats.propostasEnviadas}</p>

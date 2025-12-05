@@ -7,7 +7,9 @@ import { AppSidebar } from '@/components/AppSidebar';
 import { DashboardHeader } from '@/components/DashboardHeader';
 import { KanbanBoard } from '@/components/kanban/KanbanBoard';
 import { LeadDrawer } from '@/components/kanban/LeadDrawer';
-import { CreateLeadDialog } from '@/components/kanban/CreateLeadDialog';
+import { CreateLeadDrawer } from '@/components/kanban/CreateLeadDrawer';
+import { Button } from '@/components/ui/button';
+import { UserPlus } from 'lucide-react';
 import { Loader2, Calendar } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -44,6 +46,7 @@ export default function Kanban() {
   const [loading, setLoading] = useState(true);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [createDrawerOpen, setCreateDrawerOpen] = useState(false);
   const [dateFilter, setDateFilter] = useState<DateFilter>('all');
 
   useEffect(() => {
@@ -178,7 +181,7 @@ export default function Kanban() {
             {/* Date Filter and Create Button */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <Calendar className="w-4 h-4 text-muted-foreground" />
+                <Calendar className="w-4 h-4 text-primary" />
                 <Select value={dateFilter} onValueChange={(v) => setDateFilter(v as DateFilter)}>
                   <SelectTrigger className="w-48 bg-card border-border">
                     <SelectValue placeholder="Filtrar por data" />
@@ -195,7 +198,10 @@ export default function Kanban() {
                   {filteredLeads.length} lead{filteredLeads.length !== 1 ? 's' : ''}
                 </span>
               </div>
-              <CreateLeadDialog onCreated={fetchLeads} />
+              <Button variant="outline" className="gap-2" onClick={() => setCreateDrawerOpen(true)}>
+                <UserPlus className="w-4 h-4 text-primary" />
+                Criar Lead
+              </Button>
             </div>
             
             {loading ? (
@@ -216,6 +222,11 @@ export default function Kanban() {
           open={drawerOpen}
           onOpenChange={setDrawerOpen}
           onUpdate={handleUpdateLead}
+        />
+        <CreateLeadDrawer
+          open={createDrawerOpen}
+          onOpenChange={setCreateDrawerOpen}
+          onCreated={fetchLeads}
         />
       </div>
     </SidebarProvider>

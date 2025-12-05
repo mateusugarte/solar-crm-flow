@@ -168,7 +168,7 @@ export default function ResgateLeads() {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Phone className="w-4 h-4" />
+                  <Phone className="w-4 h-4 text-primary" />
                   {lead.numero}
                 </div>
               </TableCell>
@@ -189,7 +189,7 @@ export default function ResgateLeads() {
               </TableCell>
               <TableCell>
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <MessageCircle className="w-4 h-4" />
+                  <MessageCircle className="w-4 h-4 text-primary" />
                   {formatDate(lead.ultima_mensagem)}
                 </div>
               </TableCell>
@@ -226,7 +226,7 @@ export default function ResgateLeads() {
                 disabled={loading}
                 className="gap-2"
               >
-                <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-4 h-4 text-primary ${loading ? 'animate-spin' : ''}`} />
                 Atualizar
               </Button>
             </div>
@@ -258,11 +258,11 @@ export default function ResgateLeads() {
             <Tabs defaultValue="followup" className="space-y-4">
               <TabsList className="bg-muted/50">
                 <TabsTrigger value="followup" className="gap-2 data-[state=active]:bg-background">
-                  <Clock className="w-4 h-4" />
+                  <Clock className="w-4 h-4 text-primary" />
                   Follow-up ({followUp.length})
                 </TabsTrigger>
                 <TabsTrigger value="oportunidades" className="gap-2 data-[state=active]:bg-background">
-                  <Target className="w-4 h-4" />
+                  <Target className="w-4 h-4 text-primary" />
                   Oportunidades ({oportunidades.length})
                 </TabsTrigger>
               </TabsList>
@@ -322,7 +322,7 @@ export default function ResgateLeads() {
               {/* Lead Info */}
               <div className="space-y-4">
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                  <Phone className="w-5 h-5 text-muted-foreground" />
+                  <Phone className="w-5 h-5 text-primary" />
                   <div>
                     <p className="text-xs text-muted-foreground">Número</p>
                     <p className="font-medium text-foreground">{selectedLead.numero}</p>
@@ -331,7 +331,7 @@ export default function ResgateLeads() {
 
                 {selectedLead.nome_whatsapp && (
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                    <MessageCircle className="w-5 h-5 text-muted-foreground" />
+                    <MessageCircle className="w-5 h-5 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Nome WhatsApp</p>
                       <p className="font-medium text-foreground">{selectedLead.nome_whatsapp}</p>
@@ -340,7 +340,7 @@ export default function ResgateLeads() {
                 )}
 
                 <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                  <Clock className="w-5 h-5 text-muted-foreground" />
+                  <Clock className="w-5 h-5 text-primary" />
                   <div>
                     <p className="text-xs text-muted-foreground">Última Mensagem</p>
                     <p className="font-medium text-foreground">
@@ -356,7 +356,7 @@ export default function ResgateLeads() {
 
                 {selectedLead.renda && (
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30">
-                    <Users className="w-5 h-5 text-muted-foreground" />
+                    <Users className="w-5 h-5 text-primary" />
                     <div>
                       <p className="text-xs text-muted-foreground">Renda</p>
                       <p className="font-medium text-foreground">{selectedLead.renda}</p>
@@ -401,7 +401,7 @@ export default function ResgateLeads() {
               {hasOpportunity(selectedLead) && (
                 <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
                   <p className="text-sm text-green-400 font-medium flex items-center gap-2">
-                    <Target className="w-4 h-4" />
+                    <Target className="w-4 h-4 text-primary" />
                     Oportunidade
                   </p>
                   <p className="text-sm text-foreground mt-2">

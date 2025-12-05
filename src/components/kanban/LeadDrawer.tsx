@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { X, Save, Phone, User, Wallet, FileText, Calendar, Brain, Upload, File, Trash2, ArrowRightLeft } from 'lucide-react';
+
+const iconClass = "w-4 h-4 text-primary";
 import { COLUMNS } from './KanbanBoard';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
@@ -119,7 +121,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
         {/* Move To Section */}
         <div className="p-4 border-b border-border bg-muted/30">
           <Label className="flex items-center gap-2 text-sm font-medium text-foreground mb-2">
-            <ArrowRightLeft className="w-4 h-4" /> Mover para
+            <ArrowRightLeft className={iconClass} /> Mover para
           </Label>
           <Select
             value={formData.qualificacao || ''}
@@ -150,7 +152,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
             {/* Basic Fields */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-muted-foreground">
-                <User className="w-4 h-4" /> Nome Completo
+                <User className={iconClass} /> Nome Completo
               </Label>
               <Input
                 value={formData.nome_completo || ''}
@@ -161,7 +163,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
 
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-muted-foreground">
-                <Phone className="w-4 h-4" /> Número
+                <Phone className={iconClass} /> Número
               </Label>
               <Input
                 value={formData.numero}
@@ -183,7 +185,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
 
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-muted-foreground">
-                <Wallet className="w-4 h-4" /> Renda
+                <Wallet className={iconClass} /> Renda
               </Label>
               <Input
                 value={formData.renda || ''}
@@ -205,7 +207,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
 
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-muted-foreground">
-                <FileText className="w-4 h-4" /> Resumo
+                <FileText className={iconClass} /> Resumo
               </Label>
               <Textarea
                 value={formData.resumo || ''}
@@ -216,7 +218,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
 
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-muted-foreground">
-                <Calendar className="w-4 h-4" /> Última Mensagem
+                <Calendar className={iconClass} /> Última Mensagem
               </Label>
               <div className="text-sm text-muted-foreground bg-muted/30 p-3 rounded-lg">
                 {formData.ultima_mensagem || 'Sem mensagem'}
@@ -225,7 +227,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
 
             <div className="space-y-2">
               <Label className="flex items-center gap-2 text-muted-foreground">
-                <Brain className="w-4 h-4" /> Pausar IA
+                <Brain className={iconClass} /> Pausar IA
               </Label>
               <Select
                 value={formData.pausar_ia || 'Não'}
@@ -245,7 +247,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
             {isProposalColumn && (
               <div className="pt-4 border-t border-border space-y-4">
                 <h3 className="font-semibold text-foreground flex items-center gap-2">
-                  <FileText className="w-4 h-4" />
+                  <FileText className={iconClass} />
                   Dados da Proposta
                 </h3>
 
@@ -345,7 +347,7 @@ export function LeadDrawer({ lead, open, onOpenChange, onUpdate }: LeadDrawerPro
                       disabled={uploading}
                       className="w-full"
                     >
-                      <Upload className="w-4 h-4 mr-2" />
+                      <Upload className="w-4 h-4 mr-2 text-primary" />
                       {uploading ? 'Enviando...' : 'Selecionar PDF'}
                     </Button>
                   )}

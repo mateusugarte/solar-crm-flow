@@ -5,10 +5,11 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { X, ShoppingCart, Users, UserPlus, Search, Loader2, ArrowLeft } from 'lucide-react';
+import { X, ShoppingCart, Users, UserPlus, Search, Loader2, ArrowLeft, Calendar } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from '@/hooks/use-toast';
+import { COLUMNS } from '@/components/kanban/KanbanBoard';
 
 interface Lead {
   id: string;
@@ -20,6 +21,7 @@ interface Lead {
   valor_proposta: string | null;
   forma_pagamento: string | null;
   produto_proposta: string | null;
+  criado_em: string | null;
 }
 
 interface SaleDrawerProps {
@@ -29,10 +31,17 @@ interface SaleDrawerProps {
   onSuccess: () => void;
 }
 
+const getColumnColor = (qualificacao: string | null) => {
+  if (!qualificacao) return null;
+  const col = COLUMNS.find(c => c.id.toLowerCase() === qualificacao.toLowerCase());
+  return col?.color || null;
+};
+
 export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerProps) {
   const [mode, setMode] = useState<'select' | 'manual' | null>(null);
   const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [dateFilter, setDateFilter] = useState<string>('all');
   const [saving, setSaving] = useState(false);
 
   // Form data for manual registration
@@ -58,14 +67,48 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
   });
 
   const filteredLeads = useMemo(() => {
-    if (!searchTerm) return leads;
-    const term = searchTerm.toLowerCase();
-    return leads.filter(l => 
-      l.nome_completo?.toLowerCase().includes(term) ||
-      l.numero?.includes(term) ||
-      l.nome_whatsapp?.toLowerCase().includes(term)
-    );
-  }, [leads, searchTerm]);
+    let filtered = leads;
+    
+    // Apply date filter
+    if (dateFilter !== 'all') {
+      const now = new Date();
+      const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      
+      filtered = filtered.filter(lead => {
+        if (!lead.criado_em) return false;
+        
+        // Parse date in format dd-MM-yyyy or dd/MM/yyyy
+        const parts = lead.criado_em.split(/[-\/]/);
+        if (parts.length < 3) return false;
+        const leadDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+        
+        const diffDays = Math.floor((today.getTime() - leadDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        switch (dateFilter) {
+          case 'today':
+            return diffDays === 0;
+          case '3days':
+            return diffDays <= 3;
+          case '7days':
+            return diffDays <= 7;
+          default:
+            return true;
+        }
+      });
+    }
+    
+    // Apply search filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(l => 
+        l.nome_completo?.toLowerCase().includes(term) ||
+        l.numero?.includes(term) ||
+        l.nome_whatsapp?.toLowerCase().includes(term)
+      );
+    }
+    
+    return filtered;
+  }, [leads, searchTerm, dateFilter]);
 
   const handleSelectLead = (lead: Lead) => {
     setSelectedLead(lead);
@@ -135,6 +178,7 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
     setMode(null);
     setSelectedLead(null);
     setSearchTerm('');
+    setDateFilter('all');
     setFormData({
       nome_completo: '',
       numero: '',
@@ -193,8 +237,8 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
                   className="flex items-center gap-4 p-4 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 hover:border-primary/50 transition-all group"
                   onClick={() => setMode('select')}
                 >
-                  <div className="p-3 rounded-lg bg-cyan-500/10 group-hover:bg-cyan-500/20 transition-colors">
-                    <Users className="w-6 h-6 text-cyan-400" />
+                  <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <Users className="w-6 h-6 text-primary" />
                   </div>
                   <div className="text-left">
                     <p className="font-semibold text-foreground">Usuário Existente</p>
@@ -205,8 +249,8 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
                   className="flex items-center gap-4 p-4 rounded-xl border border-border bg-muted/30 hover:bg-muted/50 hover:border-primary/50 transition-all group"
                   onClick={() => setMode('manual')}
                 >
-                  <div className="p-3 rounded-lg bg-amber-500/10 group-hover:bg-amber-500/20 transition-colors">
-                    <UserPlus className="w-6 h-6 text-amber-400" />
+                  <div className="p-3 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
+                    <UserPlus className="w-6 h-6 text-primary" />
                   </div>
                   <div className="text-left">
                     <p className="font-semibold text-foreground">Cadastrar Manual</p>
@@ -220,12 +264,28 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
           {/* Select Existing Lead */}
           {mode === 'select' && !selectedLead && (
             <div className="space-y-4">
-              <Button variant="ghost" size="sm" onClick={goBack} className="gap-2">
+              <Button variant="ghost" size="sm" onClick={goBack} className="gap-2 text-primary">
                 <ArrowLeft className="w-4 h-4" /> Voltar
               </Button>
 
+              {/* Date Filter */}
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-primary" />
+                <Select value={dateFilter} onValueChange={setDateFilter}>
+                  <SelectTrigger className="bg-muted/50 border-border/50 flex-1">
+                    <SelectValue placeholder="Filtrar por data" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">Todos</SelectItem>
+                    <SelectItem value="today">Hoje</SelectItem>
+                    <SelectItem value="3days">Últimos 3 dias</SelectItem>
+                    <SelectItem value="7days">Últimos 7 dias</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-primary" />
                 <Input
                   placeholder="Buscar por nome ou número..."
                   value={searchTerm}
@@ -234,23 +294,36 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
                 />
               </div>
 
-              <ScrollArea className="h-[calc(100vh-320px)]">
+              <ScrollArea className="h-[calc(100vh-380px)]">
                 <div className="space-y-2 pr-2">
-                  {filteredLeads.map(lead => (
-                    <div
-                      key={lead.id}
-                      className="p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/50 hover:border-primary/50 cursor-pointer transition-all"
-                      onClick={() => handleSelectLead(lead)}
-                    >
-                      <p className="font-medium text-foreground">{lead.nome_completo || lead.nome_whatsapp || 'Sem nome'}</p>
-                      <p className="text-sm text-muted-foreground font-mono">{lead.numero}</p>
-                      {lead.qualificacao && (
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground mt-2 inline-block">
-                          {lead.qualificacao}
-                        </span>
-                      )}
-                    </div>
-                  ))}
+                  {filteredLeads.map(lead => {
+                    const qualColor = getColumnColor(lead.qualificacao);
+                    return (
+                      <div
+                        key={lead.id}
+                        className="p-4 rounded-lg border border-border bg-muted/30 hover:bg-muted/50 hover:border-primary/50 cursor-pointer transition-all"
+                        onClick={() => handleSelectLead(lead)}
+                      >
+                        <p className="font-medium text-foreground">{lead.nome_completo || lead.nome_whatsapp || 'Sem nome'}</p>
+                        <p className="text-sm text-muted-foreground font-mono">{lead.numero}</p>
+                        {lead.qualificacao && (
+                          <span 
+                            className="text-xs px-2 py-0.5 rounded-full mt-2 inline-flex items-center gap-1.5"
+                            style={{ 
+                              backgroundColor: qualColor ? `${qualColor}20` : 'hsl(var(--muted))',
+                              color: qualColor || 'hsl(var(--muted-foreground))'
+                            }}
+                          >
+                            <div 
+                              className="w-2 h-2 rounded-full" 
+                              style={{ backgroundColor: qualColor || 'hsl(var(--muted-foreground))' }}
+                            />
+                            {lead.qualificacao}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
                   {filteredLeads.length === 0 && (
                     <p className="text-center text-muted-foreground py-8">Nenhum lead encontrado</p>
                   )}
