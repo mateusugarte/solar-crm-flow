@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Products from "./pages/Products";
 import Kanban from "./pages/Kanban";
 import Vendas from "./pages/Vendas";
+import Propostas from "./pages/Propostas";
 import ResgateLeads from "./pages/ResgateLeads";
 import NotFound from "./pages/NotFound";
 
@@ -30,6 +31,7 @@ const App = () => (
               <Route path="/products" element={<Products />} />
               <Route path="/kanban" element={<Kanban />} />
               <Route path="/vendas" element={<Vendas />} />
+              <Route path="/propostas" element={<Propostas />} />
               <Route path="/resgate" element={<ResgateLeads />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
