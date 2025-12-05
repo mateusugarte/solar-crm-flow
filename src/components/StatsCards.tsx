@@ -1,6 +1,6 @@
 import { Lead } from '@/pages/Dashboard';
 import { Card, CardContent } from '@/components/ui/card';
-import { Users, UserCheck, TrendingUp, FileCheck, ShoppingCart, FileX } from 'lucide-react';
+import { Users, UserCheck, TrendingUp, FileCheck, ShoppingCart, FileX, FileEdit, Target, UserX, Clock } from 'lucide-react';
 import { parse, differenceInHours } from 'date-fns';
 
 interface StatsCardsProps {
@@ -25,19 +25,41 @@ const isMoreThan8HoursAgo = (dateStr: string | null): boolean => {
 
 export function StatsCards({ leads }: StatsCardsProps) {
   const total = leads.length;
+  
   const qualificados = leads.filter(l => 
     l.qualificacao?.toLowerCase() === 'qualificado'
   ).length;
+  
+  const elaborandoProposta = leads.filter(l => 
+    l.qualificacao?.toLowerCase() === 'elaborando proposta'
+  ).length;
+  
   const propostasEnviadas = leads.filter(l => 
     l.qualificacao?.toLowerCase() === 'proposta enviada'
   ).length;
+  
   const vendasConcluidas = leads.filter(l => 
     l.qualificacao?.toLowerCase() === 'venda concluida'
   ).length;
+  
   const propostasRejeitadas = leads.filter(l => 
     l.qualificacao?.toLowerCase() === 'proposta rejeitada'
   ).length;
-  const taxaQualificacao = total > 0 ? Math.round((qualificados / total) * 100) : 0;
+  
+  const desqualificados = leads.filter(l => 
+    l.qualificacao?.toLowerCase() === 'desqualificado'
+  ).length;
+  
+  const pendentesFollowUp = leads.filter(l => 
+    l.qualificacao?.toLowerCase() !== 'desqualificado' &&
+    l.qualificacao?.toLowerCase() !== 'venda concluida' &&
+    l.qualificacao?.toLowerCase() !== 'proposta rejeitada' &&
+    isMoreThan8HoursAgo(l.ultima_mensagem)
+  ).length;
+  
+  // Taxa de conversão: vendas / total de propostas (enviadas + rejeitadas + vendas)
+  const totalPropostas = propostasEnviadas + vendasConcluidas + propostasRejeitadas;
+  const taxaConversao = totalPropostas > 0 ? Math.round((vendasConcluidas / totalPropostas) * 100) : 0;
 
   const stats = [
     {
@@ -46,14 +68,19 @@ export function StatsCards({ leads }: StatsCardsProps) {
       icon: Users,
     },
     {
-      title: 'Taxa de Qualificação',
-      value: `${taxaQualificacao}%`,
-      icon: TrendingUp,
+      title: 'Taxa de Conversão',
+      value: `${taxaConversao}%`,
+      icon: Target,
     },
     {
       title: 'Qualificados',
       value: qualificados,
       icon: UserCheck,
+    },
+    {
+      title: 'Elaborando Proposta',
+      value: elaborandoProposta,
+      icon: FileEdit,
     },
     {
       title: 'Propostas Enviadas',
@@ -70,10 +97,20 @@ export function StatsCards({ leads }: StatsCardsProps) {
       value: propostasRejeitadas,
       icon: FileX,
     },
+    {
+      title: 'Desqualificados',
+      value: desqualificados,
+      icon: UserX,
+    },
+    {
+      title: 'Pendentes Follow-up',
+      value: pendentesFollowUp,
+      icon: Clock,
+    },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
       {stats.map((stat) => (
         <Card 
           key={stat.title}
