@@ -20,7 +20,7 @@ export function PageTransition({ children }: PageTransitionProps) {
         setDisplayChildren(children);
         setCurrentKey(location.key);
         setIsLoading(false);
-      }, 2000);
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [location.key, children, currentKey]);

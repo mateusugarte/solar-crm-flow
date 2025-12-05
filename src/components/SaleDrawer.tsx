@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,6 +24,13 @@ interface Lead {
   criado_em: string | null;
 }
 
+interface Product {
+  id: string;
+  modelo: string | null;
+  preco_por_placa: string | null;
+  status: string | null;
+}
+
 interface SaleDrawerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -43,6 +50,7 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
   const [searchTerm, setSearchTerm] = useState('');
   const [dateFilter, setDateFilter] = useState<string>('all');
   const [saving, setSaving] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
 
   // Form data for manual registration
   const [formData, setFormData] = useState({
@@ -55,6 +63,9 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
     produto_proposta: '',
     prazo_instalacao: '',
     info_proposta: '',
+    parcelas: '',
+    valor_parcela: '',
+    instituicao_financiamento: '',
   });
 
   // Sale data (used for existing lead)
@@ -64,40 +75,52 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
     produto_proposta: '',
     prazo_instalacao: '',
     info_proposta: '',
+    parcelas: '',
+    valor_parcela: '',
+    instituicao_financiamento: '',
   });
+
+  // Fetch products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase
+        .from('placas_solares')
+        .select('id, modelo, preco_por_placa, status')
+        .eq('status', 'disponivel');
+      
+      if (!error && data) {
+        setProducts(data);
+      }
+    };
+    
+    if (open) {
+      fetchProducts();
+    }
+  }, [open]);
 
   const filteredLeads = useMemo(() => {
     let filtered = leads;
     
-    // Apply date filter
     if (dateFilter !== 'all') {
       const now = new Date();
       const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       
       filtered = filtered.filter(lead => {
         if (!lead.criado_em) return false;
-        
-        // Parse date in format dd-MM-yyyy or dd/MM/yyyy
         const parts = lead.criado_em.split(/[-\/]/);
         if (parts.length < 3) return false;
         const leadDate = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
-        
         const diffDays = Math.floor((today.getTime() - leadDate.getTime()) / (1000 * 60 * 60 * 24));
         
         switch (dateFilter) {
-          case 'today':
-            return diffDays === 0;
-          case '3days':
-            return diffDays <= 3;
-          case '7days':
-            return diffDays <= 7;
-          default:
-            return true;
+          case 'today': return diffDays === 0;
+          case '3days': return diffDays <= 3;
+          case '7days': return diffDays <= 7;
+          default: return true;
         }
       });
     }
     
-    // Apply search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(l => 
@@ -118,7 +141,26 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
       produto_proposta: lead.produto_proposta || '',
       prazo_instalacao: '',
       info_proposta: '',
+      parcelas: '',
+      valor_parcela: '',
+      instituicao_financiamento: '',
     });
+  };
+
+  const buildInfoProposta = (data: typeof saleData | typeof formData) => {
+    let info = data.info_proposta || '';
+    if (data.forma_pagamento === 'Cartao' || data.forma_pagamento === 'Financiamento') {
+      const paymentDetails = [];
+      if (data.parcelas) paymentDetails.push(`Parcelas: ${data.parcelas}x`);
+      if (data.valor_parcela) paymentDetails.push(`Valor da parcela: R$ ${data.valor_parcela}`);
+      if (data.forma_pagamento === 'Financiamento' && data.instituicao_financiamento) {
+        paymentDetails.push(`Instituição: ${data.instituicao_financiamento}`);
+      }
+      if (paymentDetails.length > 0) {
+        info = info ? `${info}\n\n${paymentDetails.join('\n')}` : paymentDetails.join('\n');
+      }
+    }
+    return info;
   };
 
   const handleRegisterSale = async () => {
@@ -133,7 +175,7 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
           forma_pagamento: saleData.forma_pagamento,
           produto_proposta: saleData.produto_proposta,
           prazo_instalacao: saleData.prazo_instalacao,
-          info_proposta: saleData.info_proposta,
+          info_proposta: buildInfoProposta(saleData),
         })
         .eq('id', selectedLead.id);
 
@@ -157,7 +199,7 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
           forma_pagamento: formData.forma_pagamento,
           produto_proposta: formData.produto_proposta,
           prazo_instalacao: formData.prazo_instalacao,
-          info_proposta: formData.info_proposta,
+          info_proposta: buildInfoProposta(formData),
           criado_em: new Date().toLocaleDateString('pt-BR').split('/').join('-'),
         });
 
@@ -189,6 +231,9 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
       produto_proposta: '',
       prazo_instalacao: '',
       info_proposta: '',
+      parcelas: '',
+      valor_parcela: '',
+      instituicao_financiamento: '',
     });
     setSaleData({
       valor_proposta: '',
@@ -196,6 +241,9 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
       produto_proposta: '',
       prazo_instalacao: '',
       info_proposta: '',
+      parcelas: '',
+      valor_parcela: '',
+      instituicao_financiamento: '',
     });
   };
 
@@ -206,6 +254,113 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
       setMode(null);
     }
   };
+
+  // Payment form fields component
+  const PaymentFields = ({ data, setData }: { data: typeof saleData; setData: (d: typeof saleData) => void }) => (
+    <>
+      <div className="space-y-2">
+        <Label className="text-muted-foreground">Forma de Pagamento</Label>
+        <Select
+          value={data.forma_pagamento}
+          onValueChange={(v) => setData({ ...data, forma_pagamento: v, parcelas: '', valor_parcela: '', instituicao_financiamento: '' })}
+        >
+          <SelectTrigger className="bg-muted/50 border-border/50">
+            <SelectValue placeholder="Selecione..." />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="A Vista">À Vista</SelectItem>
+            <SelectItem value="Financiamento">Financiamento</SelectItem>
+            <SelectItem value="PIX">PIX</SelectItem>
+            <SelectItem value="Cartao">Cartão de Crédito</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {data.forma_pagamento === 'Cartao' && (
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">Nº de Parcelas</Label>
+            <Select value={data.parcelas} onValueChange={(v) => setData({ ...data, parcelas: v })}>
+              <SelectTrigger className="bg-muted/50 border-border/50">
+                <SelectValue placeholder="Parcelas" />
+              </SelectTrigger>
+              <SelectContent>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                  <SelectItem key={n} value={String(n)}>{n}x</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">Valor da Parcela</Label>
+            <Input
+              value={data.valor_parcela}
+              onChange={(e) => setData({ ...data, valor_parcela: e.target.value })}
+              placeholder="R$ 0,00"
+              className="bg-muted/50 border-border/50"
+            />
+          </div>
+        </div>
+      )}
+
+      {data.forma_pagamento === 'Financiamento' && (
+        <>
+          <div className="space-y-2">
+            <Label className="text-muted-foreground">Instituição de Financiamento</Label>
+            <Input
+              value={data.instituicao_financiamento}
+              onChange={(e) => setData({ ...data, instituicao_financiamento: e.target.value })}
+              placeholder="Ex: BV, Santander, Caixa..."
+              className="bg-muted/50 border-border/50"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-2">
+              <Label className="text-muted-foreground">Nº de Parcelas</Label>
+              <Select value={data.parcelas} onValueChange={(v) => setData({ ...data, parcelas: v })}>
+                <SelectTrigger className="bg-muted/50 border-border/50">
+                  <SelectValue placeholder="Parcelas" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[12, 24, 36, 48, 60, 72, 84, 96, 108, 120].map(n => (
+                    <SelectItem key={n} value={String(n)}>{n}x</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label className="text-muted-foreground">Valor da Parcela</Label>
+              <Input
+                value={data.valor_parcela}
+                onChange={(e) => setData({ ...data, valor_parcela: e.target.value })}
+                placeholder="R$ 0,00"
+                className="bg-muted/50 border-border/50"
+              />
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+
+  // Product select field component
+  const ProductSelect = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => (
+    <div className="space-y-2">
+      <Label className="text-muted-foreground">Produto</Label>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="bg-muted/50 border-border/50">
+          <SelectValue placeholder="Selecione um produto..." />
+        </SelectTrigger>
+        <SelectContent>
+          {products.map(product => (
+            <SelectItem key={product.id} value={product.modelo || product.id}>
+              {product.modelo} {product.preco_por_placa && `- ${product.preco_por_placa}`}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
 
   return (
     <div 
@@ -268,7 +423,6 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
                 <ArrowLeft className="w-4 h-4" /> Voltar
               </Button>
 
-              {/* Date Filter */}
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4 text-primary" />
                 <Select value={dateFilter} onValueChange={setDateFilter}>
@@ -335,7 +489,7 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
           {/* Sale Form for Selected Lead */}
           {mode === 'select' && selectedLead && (
             <div className="space-y-4">
-              <Button variant="ghost" size="sm" onClick={goBack} className="gap-2">
+              <Button variant="ghost" size="sm" onClick={goBack} className="gap-2 text-primary">
                 <ArrowLeft className="w-4 h-4" /> Voltar
               </Button>
 
@@ -357,34 +511,12 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">Forma de Pagamento</Label>
-                  <Select
-                    value={saleData.forma_pagamento}
-                    onValueChange={(v) => setSaleData({ ...saleData, forma_pagamento: v })}
-                  >
-                    <SelectTrigger className="bg-muted/50 border-border/50">
-                      <SelectValue placeholder="Selecione..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="A Vista">À Vista</SelectItem>
-                      <SelectItem value="Financiamento">Financiamento</SelectItem>
-                      <SelectItem value="Parcelado">Parcelado</SelectItem>
-                      <SelectItem value="PIX">PIX</SelectItem>
-                      <SelectItem value="Cartao">Cartão de Crédito</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">Produto</Label>
-                  <Input
-                    value={saleData.produto_proposta}
-                    onChange={(e) => setSaleData({ ...saleData, produto_proposta: e.target.value })}
-                    placeholder="Ex: Kit 10 Placas 550W"
-                    className="bg-muted/50 border-border/50"
-                  />
-                </div>
+                <PaymentFields data={saleData} setData={setSaleData} />
+                
+                <ProductSelect 
+                  value={saleData.produto_proposta} 
+                  onChange={(v) => setSaleData({ ...saleData, produto_proposta: v })} 
+                />
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">Prazo de Instalação</Label>
@@ -412,7 +544,7 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
           {/* Manual Registration Form */}
           {mode === 'manual' && (
             <div className="space-y-4">
-              <Button variant="ghost" size="sm" onClick={goBack} className="gap-2">
+              <Button variant="ghost" size="sm" onClick={goBack} className="gap-2 text-primary">
                 <ArrowLeft className="w-4 h-4" /> Voltar
               </Button>
 
@@ -469,34 +601,15 @@ export function SaleDrawer({ open, onOpenChange, leads, onSuccess }: SaleDrawerP
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">Forma de Pagamento *</Label>
-                  <Select
-                    value={formData.forma_pagamento}
-                    onValueChange={(v) => setFormData({ ...formData, forma_pagamento: v })}
-                  >
-                    <SelectTrigger className="bg-muted/50 border-border/50">
-                      <SelectValue placeholder="Selecione..." />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="A Vista">À Vista</SelectItem>
-                      <SelectItem value="Financiamento">Financiamento</SelectItem>
-                      <SelectItem value="Parcelado">Parcelado</SelectItem>
-                      <SelectItem value="PIX">PIX</SelectItem>
-                      <SelectItem value="Cartao">Cartão de Crédito</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <PaymentFields 
+                  data={formData as typeof saleData} 
+                  setData={(d) => setFormData({ ...formData, ...d })} 
+                />
 
-                <div className="space-y-2">
-                  <Label className="text-muted-foreground">Produto *</Label>
-                  <Input
-                    value={formData.produto_proposta}
-                    onChange={(e) => setFormData({ ...formData, produto_proposta: e.target.value })}
-                    placeholder="Ex: Kit 10 Placas 550W"
-                    className="bg-muted/50 border-border/50"
-                  />
-                </div>
+                <ProductSelect 
+                  value={formData.produto_proposta} 
+                  onChange={(v) => setFormData({ ...formData, produto_proposta: v })} 
+                />
 
                 <div className="space-y-2">
                   <Label className="text-muted-foreground">Prazo de Instalação</Label>
